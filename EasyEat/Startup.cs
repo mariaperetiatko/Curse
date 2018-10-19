@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
+using EasyEat.Models;
 
 namespace EasyEat
 {
@@ -27,6 +28,8 @@ namespace EasyEat
         {
           
             services.AddMvc();
+            var connection = @"Server=DESKTOP-LLK7E72\\SQLEXPRESS;Database=Eat;Trusted_Connection=True;ConnectRetryCount=0";
+            services.AddDbContext<EatContext>(options => options.UseSqlServer(connection));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
