@@ -1,44 +1,49 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace EasyEat.Models
 {
-    public class EasyEatContext:DbContext
+    public partial class EatContext : DbContext
     {
-
-        public EasyEatContext(DbContextOptions<EasyEatContext> options) : base(options)
+        public EatContext()
         {
         }
 
-        public virtual DbSet<Cart> Carts { get; set; }
-        public virtual DbSet<CartPart> CartParts { get; set; }
-        public virtual DbSet<Customer> Customers { get; set; }
-        public virtual DbSet<DeliveryAddress> DeliveryAddresses { get; set; }
-        public virtual DbSet<Dish> Dishes { get; set; }
-        public virtual DbSet<FavouriteDish> FavouriteDishes { get; set; }
-        public virtual DbSet<FoodOrder> FoodOrders { get; set; }
-        public virtual DbSet<FoodStyle> FoodStyle { get; set; }
-        public virtual DbSet<FoodStyleProduct> FoodStyleProducts { get; set; }
-        public virtual DbSet<Ingredient> Ingredients { get; set; }
-        public virtual DbSet<MealTime> MealTimes { get; set; }
-        public virtual DbSet<Menu> Menus { get; set; }
-        public virtual DbSet<Product> Products { get; set; }
-        public virtual DbSet<Restaurant> Restaurants { get; set; }
-        public virtual DbSet<SpecialProduct> SpecialProducts { get; set; }
+        public EatContext(DbContextOptions<EatContext> options)
+            : base(options)
+        {
+        }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    if (!optionsBuilder.IsConfigured)
-        //    {
-        //        optionsBuilder.UseSqlServer("DefaultConnection");
-        //    }
-        //}
+        public virtual DbSet<Cart> Cart { get; set; }
+        public virtual DbSet<CartPart> CartPart { get; set; }
+        public virtual DbSet<Customer> Customer { get; set; }
+        public virtual DbSet<DeliveryAddress> DeliveryAddress { get; set; }
+        public virtual DbSet<Dish> Dish { get; set; }
+        public virtual DbSet<FavouriteDish> FavouriteDish { get; set; }
+        public virtual DbSet<FoodOrder> FoodOrder { get; set; }
+        public virtual DbSet<FoodStyle> FoodStyle { get; set; }
+        public virtual DbSet<FoodStyleProduct> FoodStyleProduct { get; set; }
+        public virtual DbSet<Ingredient> Ingredient { get; set; }
+        public virtual DbSet<MealTime> MealTime { get; set; }
+        public virtual DbSet<Menu> Menu { get; set; }
+        public virtual DbSet<Product> Product { get; set; }
+        public virtual DbSet<Restaurant> Restaurant { get; set; }
+        public virtual DbSet<SpecialProduct> SpecialProduct { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer("Server=DESKTOP-LLK7E72\\SQLEXPRESS;Database=Eat;Trusted_Connection=True;");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasAnnotation("ProductVersion", "2.2.0-preview3-35497");
+
             modelBuilder.Entity<Cart>(entity =>
             {
                 entity.HasKey(e => e.CustomerId)
@@ -53,7 +58,7 @@ namespace EasyEat.Models
                 entity.Property(e => e.MealTimeId).HasColumnName("MealTimeID");
 
                 entity.HasOne(d => d.Address)
-                    .WithMany(p => p.Carts)
+                    .WithMany(p => p.Cart)
                     .HasForeignKey(d => d.AddressId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Cart_AddressID");
@@ -65,7 +70,7 @@ namespace EasyEat.Models
                     .HasConstraintName("FK_Cart_CustomerID");
 
                 entity.HasOne(d => d.MealTime)
-                    .WithMany(p => p.Carts)
+                    .WithMany(p => p.Cart)
                     .HasForeignKey(d => d.MealTimeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Cart_MealTimeID");
@@ -81,13 +86,13 @@ namespace EasyEat.Models
                 entity.Property(e => e.CartId).HasColumnName("CartID");
 
                 entity.HasOne(d => d.Cart)
-                    .WithMany(p => p.CartParts)
+                    .WithMany(p => p.CartPart)
                     .HasForeignKey(d => d.CartId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_CartPart_CartID");
 
                 entity.HasOne(d => d.Dish)
-                    .WithMany(p => p.CartParts)
+                    .WithMany(p => p.CartPart)
                     .HasForeignKey(d => d.DishId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_CartPart_DishID");
@@ -102,7 +107,7 @@ namespace EasyEat.Models
                 entity.Property(e => e.LastName).IsRequired();
 
                 entity.HasOne(d => d.FoodStyle)
-                    .WithMany(p => p.Customers)
+                    .WithMany(p => p.Customer)
                     .HasForeignKey(d => d.FoodStyleId)
                     .HasConstraintName("FK_FoodStyleID");
             });
@@ -118,7 +123,7 @@ namespace EasyEat.Models
                 entity.Property(e => e.Streete).IsRequired();
 
                 entity.HasOne(d => d.Customer)
-                    .WithMany(p => p.DeliveryAddresses)
+                    .WithMany(p => p.DeliveryAddress)
                     .HasForeignKey(d => d.CustomerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_DeliveryAddress_CustomerID");
@@ -139,13 +144,13 @@ namespace EasyEat.Models
                 entity.Property(e => e.DishId).HasColumnName("DishID");
 
                 entity.HasOne(d => d.Customer)
-                    .WithMany(p => p.FavouriteDishes)
+                    .WithMany(p => p.FavouriteDish)
                     .HasForeignKey(d => d.CustomerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FavouriteDish_CustomerID");
 
                 entity.HasOne(d => d.Dish)
-                    .WithMany(p => p.FavouriteDishes)
+                    .WithMany(p => p.FavouriteDish)
                     .HasForeignKey(d => d.DishId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FavouriteDish_DishID");
@@ -160,13 +165,13 @@ namespace EasyEat.Models
                 entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
 
                 entity.HasOne(d => d.Address)
-                    .WithMany(p => p.FoodOrders)
+                    .WithMany(p => p.FoodOrder)
                     .HasForeignKey(d => d.AddressId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FoodOrder_AddressID");
 
                 entity.HasOne(d => d.Customer)
-                    .WithMany(p => p.FoodOrders)
+                    .WithMany(p => p.FoodOrder)
                     .HasForeignKey(d => d.CustomerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FoodOrder_CustomerID");
@@ -187,13 +192,13 @@ namespace EasyEat.Models
                 entity.Property(e => e.ProductId).HasColumnName("ProductID");
 
                 entity.HasOne(d => d.FoodStyle)
-                    .WithMany(p => p.FoodStyleProducts)
+                    .WithMany(p => p.FoodStyleProduct)
                     .HasForeignKey(d => d.FoodStyleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FoodStyleProduct_FoodStyleID");
 
                 entity.HasOne(d => d.Product)
-                    .WithMany(p => p.FoodStyleProducts)
+                    .WithMany(p => p.FoodStyleProduct)
                     .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FoodStyleProduct_ProductID");
@@ -209,13 +214,13 @@ namespace EasyEat.Models
                 entity.Property(e => e.ProductId).HasColumnName("ProductID");
 
                 entity.HasOne(d => d.Dish)
-                    .WithMany(p => p.Ingredients)
+                    .WithMany(p => p.Ingredient)
                     .HasForeignKey(d => d.DishId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Ingredient_DishID");
 
                 entity.HasOne(d => d.Product)
-                    .WithMany(p => p.Ingredients)
+                    .WithMany(p => p.Ingredient)
                     .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Ingredient_ProductID");
@@ -236,13 +241,13 @@ namespace EasyEat.Models
                 entity.Property(e => e.RestaurantId).HasColumnName("RestaurantID");
 
                 entity.HasOne(d => d.Dish)
-                    .WithMany(p => p.Menus)
+                    .WithMany(p => p.Menu)
                     .HasForeignKey(d => d.DishId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Menu_DishID");
 
                 entity.HasOne(d => d.Restaurant)
-                    .WithMany(p => p.Menus)
+                    .WithMany(p => p.Menu)
                     .HasForeignKey(d => d.RestaurantId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Menu_RestaurantID");
@@ -274,13 +279,13 @@ namespace EasyEat.Models
                 entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
 
                 entity.HasOne(d => d.Customer)
-                    .WithMany(p => p.SpecialProducts)
+                    .WithMany(p => p.SpecialProduct)
                     .HasForeignKey(d => d.CustomerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SpecialProduct_CustomerID");
 
                 entity.HasOne(d => d.Product)
-                    .WithMany(p => p.SpecialProducts)
+                    .WithMany(p => p.SpecialProduct)
                     .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SpecialProduct_ProductID");

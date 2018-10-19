@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EasyEat.Models
 {
-    public class Ingredient
+    public partial class Ingredient
     {
         public int DishId { get; set; }
         public int ProductId { get; set; }

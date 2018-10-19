@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
-using EasyEat.Models;
 
 namespace EasyEat
 {
@@ -20,15 +19,13 @@ namespace EasyEat
             Configuration = configuration;
         }
 
+        
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connection = Configuration.GetConnectionString("DefaultConnection");
-            // добавляем контекст MobileContext в качестве сервиса в приложение
-            services.AddDbContext<EasyEatContext>(options =>
-                options.UseSqlServer(connection));
+          
             services.AddMvc();
         }
 

@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EasyEat.Models
 {
-    public class Restaurant
+    public partial class Restaurant
     {
         public Restaurant()
         {
-            Menus = new HashSet<Menu>();
+            Menu = new HashSet<Menu>();
         }
 
         public int Id { get; set; }
@@ -22,6 +20,6 @@ namespace EasyEat.Models
         public double Ycoordinate { get; set; }
         public int IsDeleted { get; set; }
 
-        public virtual ICollection<Menu> Menus { get; set; }
+        public virtual ICollection<Menu> Menu { get; set; }
     }
 }

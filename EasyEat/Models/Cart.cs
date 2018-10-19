@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EasyEat.Models
 {
-    public class Cart
+    public partial class Cart
     {
         public Cart()
         {
-            CartParts = new HashSet<CartPart>();
+            CartPart = new HashSet<CartPart>();
         }
 
         public int CustomerId { get; set; }
@@ -21,6 +19,6 @@ namespace EasyEat.Models
         public virtual DeliveryAddress Address { get; set; }
         public virtual Customer Customer { get; set; }
         public virtual MealTime MealTime { get; set; }
-        public virtual ICollection<CartPart> CartParts { get; set; }
+        public virtual ICollection<CartPart> CartPart { get; set; }
     }
 }
