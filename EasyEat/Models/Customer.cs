@@ -9,10 +9,10 @@ namespace EasyEat.Models
     {
         public Customer()
         {
-            DeliveryAddress = new HashSet<DeliveryAddress>();
-            FavouriteDish = new HashSet<FavouriteDish>();
-            FoodOrder = new HashSet<FoodOrder>();
-            SpecialProduct = new HashSet<SpecialProduct>();
+            DeliveryAddresses = new HashSet<DeliveryAddress>();
+            FavouriteDishes = new HashSet<FavouriteDish>();
+            FoodOrders = new HashSet<FoodOrder>();
+            SpecialProducts = new HashSet<SpecialProduct>();
         }
 
         public int Id { get; set; }
@@ -26,9 +26,9 @@ namespace EasyEat.Models
 
         public virtual FoodStyle FoodStyle { get; set; }
         public virtual Cart Cart { get; set; }
-        public virtual ICollection<DeliveryAddress> DeliveryAddress { get; set; }
-        public virtual ICollection<FavouriteDish> FavouriteDish { get; set; }
-        public virtual ICollection<FoodOrder> FoodOrder { get; set; }
-        public virtual ICollection<SpecialProduct> SpecialProduct { get; set; }
+        public virtual ICollection<DeliveryAddress> DeliveryAddresses { get; set; }
+        public virtual ICollection<FavouriteDish> FavouriteDishes { get; set; }
+        public virtual ICollection<FoodOrder> FoodOrders { get; set; }
+        public virtual ICollection<SpecialProduct> SpecialProducts { get; set; }
     }
 }

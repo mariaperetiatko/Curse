@@ -9,7 +9,7 @@ namespace EasyEat.Models
     {
         public Cart()
         {
-            CartPart = new HashSet<CartPart>();
+            CartParts = new HashSet<CartPart>();
         }
 
         public int CustomerId { get; set; }
@@ -21,6 +21,6 @@ namespace EasyEat.Models
         public virtual DeliveryAddress Address { get; set; }
         public virtual Customer Customer { get; set; }
         public virtual MealTime MealTime { get; set; }
-        public virtual ICollection<CartPart> CartPart { get; set; }
+        public virtual ICollection<CartPart> CartParts { get; set; }
     }
 }

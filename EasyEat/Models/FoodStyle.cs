@@ -9,15 +9,15 @@ namespace EasyEat.Models
     {
         public FoodStyle()
         {
-            Customer = new HashSet<Customer>();
-            FoodStyleProduct = new HashSet<FoodStyleProduct>();
+            Customers = new HashSet<Customer>();
+            FoodStyleProducts = new HashSet<FoodStyleProduct>();
         }
 
         public int Id { get; set; }
         public string FoodStyleName { get; set; }
         public int CaloricValue { get; set; }
 
-        public virtual ICollection<Customer> Customer { get; set; }
-        public virtual ICollection<FoodStyleProduct> FoodStyleProduct { get; set; }
+        public virtual ICollection<Customer> Customers { get; set; }
+        public virtual ICollection<FoodStyleProduct> FoodStyleProducts { get; set; }
     }
 }

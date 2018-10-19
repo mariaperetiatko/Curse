@@ -9,13 +9,13 @@ namespace EasyEat.Models
     {
         public MealTime()
         {
-            Cart = new HashSet<Cart>();
+            Carts = new HashSet<Cart>();
         }
 
         public int Id { get; set; }
         public int AllowedCaloricValue { get; set; }
         public TimeSpan MealTimestamp { get; set; }
 
-        public virtual ICollection<Cart> Cart { get; set; }
+        public virtual ICollection<Cart> Carts { get; set; }
     }
 }

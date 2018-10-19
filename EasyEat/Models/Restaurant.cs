@@ -9,7 +9,7 @@ namespace EasyEat.Models
     {
         public Restaurant()
         {
-            Menu = new HashSet<Menu>();
+            Menus = new HashSet<Menu>();
         }
 
         public int Id { get; set; }
@@ -22,6 +22,6 @@ namespace EasyEat.Models
         public double Ycoordinate { get; set; }
         public int IsDeleted { get; set; }
 
-        public virtual ICollection<Menu> Menu { get; set; }
+        public virtual ICollection<Menu> Menus { get; set; }
     }
 }
