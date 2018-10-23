@@ -54,7 +54,7 @@ namespace EasyEat
 
         // PUT api/<controller>
         [HttpPut]
-        public IActionResult Put([FromBody]Customer customer)
+        public IActionResult Update([FromBody]Customer customer)
         {
             if (customer == null)
             {
