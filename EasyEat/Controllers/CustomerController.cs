@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using EasyEat.Models;
+using EasyEat.Repositories;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,27 +13,26 @@ namespace EasyEat
     [Route("api/[controller]")]
     public class CustomerController : Controller
     {
-        EatContext db;
+        IRepository<Customer> db;
 
-        public CustomerController(EatContext context)
+        public CustomerController()
         {
-            this.db = context;
+            db = new CustomerRepository();
         }
 
-    
-    // GET: api/<controller>
-    [HttpGet]
+
+        // GET: api/<controller>
+        [HttpGet]
         public IEnumerable<Customer> Get()
         {
-            return db.Customer.ToList();
+            return db.GetEntityList();
         }
-        [HttpGet("{id}")]
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            Customer customer = db.Customer.FirstOrDefault(x => x.Id == id);
+            Customer customer = db.GetEntity(id);
             if (customer == null)
                 return NotFound();
             return new ObjectResult(customer);
@@ -40,15 +40,14 @@ namespace EasyEat
 
         // POST api/<controller>
         [HttpPost]
-        public IActionResult Create([FromBody]Customer customer)
+        public IActionResult Create(Customer customer)
         {
-            if (customer == null)
+            if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-
-            db.Customer.Add(customer);
-            db.SaveChanges();
+            db.Create(customer);
+            db.Save();
             return Ok(customer);
         }
 
@@ -60,13 +59,9 @@ namespace EasyEat
             {
                 return BadRequest();
             }
-            if (!db.Customer.Any(x => x.Id == customer.Id))
-            {
-                return NotFound();
-            }
-
+            
             db.Update(customer);
-            db.SaveChanges();
+            db.Save();
             return Ok(customer);
         }
         
@@ -74,13 +69,13 @@ namespace EasyEat
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            Customer customer = db.Customer.FirstOrDefault(x => x.Id == id);
+            Customer customer = db.GetEntity(id);
             if (customer == null)
             {
                 return NotFound();
             }
-            customer.IsDeleted = 1;
-            db.SaveChanges();
+            db.Delete(id);
+            db.Save();
             return Ok(customer);
         }
     }

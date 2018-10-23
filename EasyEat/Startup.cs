@@ -54,7 +54,7 @@ namespace EasyEat
         });
 
             services.AddMvc();
-            var connection = @"Server=DESKTOP-LLK7E72\\SQLEXPRESS;Database=Eat;Trusted_Connection=True;ConnectRetryCount=0";
+            var connection = @"Server=DESKTOP-LLK7E72\SQLEXPRESS;Database=Eat;Trusted_Connection=True;ConnectRetryCount=1";
             services.AddDbContext<EatContext>(options => options.UseSqlServer(connection));
         }
 

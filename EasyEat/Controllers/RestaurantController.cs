@@ -5,83 +5,76 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using EasyEat.Models;
-
+using EasyEat.Repositories;
 
 namespace EasyEat.Controllers
 {
-
-
     [Produces("application/json")]
     [Route("api/Restaurant")]
     public class RestaurantController : Controller
     {
+        IRepository<Restaurant> db;
 
-        EatContext db;
-
-        public RestaurantController(EatContext context)
+        public RestaurantController()
         {
-            this.db = context;
+            db = new RestaurantRepository();
         }
-        // GET: api/Restaurant
+
+        // GET: api/<controller>
         [HttpGet]
         public IEnumerable<Restaurant> Get()
         {
-            return db.Restaurant.ToList();
+            return db.GetEntityList();
         }
 
-        // GET: api/Restaurant/5
-        [HttpGet("{id}", Name = "Get")]
+        // GET api/<controller>/5
+        [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            Restaurant restaurant = db.Restaurant.FirstOrDefault(x => x.Id == id);
+            Restaurant restaurant = db.GetEntity(id);
             if (restaurant == null)
                 return NotFound();
             return new ObjectResult(restaurant);
         }
 
-        // POST: api/Restaurant
+        // POST api/<controller>
         [HttpPost]
-        public IActionResult Create([FromBody]Restaurant restaurant)
+        public IActionResult Create(Restaurant restaurant)
         {
-            if (restaurant == null)
+            if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            db.Restaurant.Add(restaurant);
-            db.SaveChanges();
+            db.Create(restaurant);
+            db.Save();
             return Ok(restaurant);
         }
 
-
-        // PUT: api/Restaurant/5
-        [HttpPut("{id}")]
+        // PUT api/<controller>
+        [HttpPut]
         public IActionResult Update([FromBody]Restaurant restaurant)
         {
             if (restaurant == null)
             {
                 return BadRequest();
             }
-            if (!db.Restaurant.Any(x => x.Id == restaurant.Id))
-            {
-                return NotFound();
-            }
 
             db.Update(restaurant);
-            db.SaveChanges();
+            db.Save();
             return Ok(restaurant);
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE api/<controller>/5
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            Restaurant restaurant = db.Restaurant.FirstOrDefault(x => x.Id == id);
+            Restaurant restaurant = db.GetEntity(id);
             if (restaurant == null)
             {
                 return NotFound();
             }
-            restaurant.IsDeleted = 1;
-            db.SaveChanges();
+            db.Delete(id);
+            db.Save();
             return Ok(restaurant);
         }
     }
