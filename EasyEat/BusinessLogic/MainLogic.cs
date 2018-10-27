@@ -7,9 +7,9 @@ using EasyEat.Repositories;
 
 namespace EasyEat.BusinessLogic
 {
-    public class MainLogic
+    public static class MainLogic
     {
-        public int GetCaloricValue(int totalCaloricValue, int mealNumber)
+        public static int GetCaloricValue(int totalCaloricValue, int mealNumber)
         {
             switch(mealNumber)
             {
@@ -24,17 +24,17 @@ namespace EasyEat.BusinessLogic
             }
         }
 
-        public int GetTotalCost(int[] costs)
+        public static int GetTotalCost(int[] costs)
         {
             return costs.Sum();
         }
 
-        public int RefreshBalance(int balance, int moneyValue)
+        public static int RefreshBalance(int balance, int moneyValue)
         {
             return balance + moneyValue;
         }
 
-        public List<Restaurant> FindInRadius(int customerXCoordinate, int customerYCoordinate, 
+        public static List<Restaurant> FindInRadius(double customerXCoordinate, double customerYCoordinate, 
                                              List<Restaurant> allRestaurants,int radius)
         {
             List<Restaurant> resultingRestaurants = new List<Restaurant>();
@@ -49,7 +49,7 @@ namespace EasyEat.BusinessLogic
             return resultingRestaurants; 
         }
 
-        public List<Restaurant> FindAllowedRestaurants(Customer customer, List<Restaurant> restaurantsInRadius, 
+        public static List<Restaurant> FindAppropriateRestaurants(Customer customer, List<Restaurant> restaurantsInRadius, 
             List<Product> products)
         {
             List<Restaurant> resultingRestaurants = new List<Restaurant>();
