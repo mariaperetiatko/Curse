@@ -24,15 +24,18 @@ namespace EasyEat.BusinessLogic
             }
         }
 
+
         public static int GetTotalCost(int[] costs)
         {
             return costs.Sum();
         }
 
+
         public static int RefreshBalance(int balance, int moneyValue)
         {
             return balance + moneyValue;
         }
+
 
         public static List<Restaurant> FindInRadius(double customerXCoordinate, double customerYCoordinate, 
                                              List<Restaurant> allRestaurants,int radius)
@@ -48,6 +51,7 @@ namespace EasyEat.BusinessLogic
             }
             return resultingRestaurants; 
         }
+
 
         public static List<Restaurant> FindAppropriateRestaurants(Customer customer, List<Restaurant> restaurantsInRadius, 
             List<Product> products)
@@ -82,6 +86,34 @@ namespace EasyEat.BusinessLogic
             return resultingRestaurants;
         }
 
+
+        public static List<Restaurant> FindByFavourites(Customer customer, List<Restaurant> restaurantsInRadius)
+        {
+            List<Restaurant> resultingRestaurants = new List<Restaurant>();
+            List<int> favouriteDishesId = customer.FavouriteDish.Select(x => x.DishId).ToList();
+
+            foreach (Restaurant restaurant in restaurantsInRadius)
+            {
+                bool isAppropriate = false;
+
+                foreach (Menu menu in restaurant.Menu)
+                {
+                    if (favouriteDishesId.Contains(menu.DishId))
+                    {
+                        isAppropriate = true;
+                        break;
+                    }
+
+                }
+
+                if (isAppropriate)
+                {
+                    resultingRestaurants.Add(restaurant);
+                    break;
+                }
+            }
+            return resultingRestaurants;
+        }
     }
 
 }
