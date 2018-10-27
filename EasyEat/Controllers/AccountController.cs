@@ -11,23 +11,19 @@ using EasyEat.Models;
 namespace EasyEat.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Identity")]
-    public class IdentityController : Controller
+    [Route("api/Account")]
+    public class AccountController : Controller
     {
         private UserManager<User> _userManager = null;
         private SignInManager<User> _signInManager = null;
 
-        public IdentityController(
+        public AccountController(
             UserManager<User> userManager,
             SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-        }
-                
-
-        
-
+        }          
 
     }
 }
