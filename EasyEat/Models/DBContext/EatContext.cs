@@ -1,10 +1,12 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
 
 namespace EasyEat.Models
 {
-    public partial class EatContext : DbContext
+    public partial class EatContext : IdentityDbContext<User>
     {
         public EatContext()
         {
@@ -30,8 +32,9 @@ namespace EasyEat.Models
         public virtual DbSet<Product> Product { get; set; }
         public virtual DbSet<Restaurant> Restaurant { get; set; }
         public virtual DbSet<SpecialProduct> SpecialProduct { get; set; }
+        public virtual DbSet<User> User { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
@@ -42,6 +45,9 @@ namespace EasyEat.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+
             modelBuilder.HasAnnotation("ProductVersion", "2.2.0-preview3-35497");
 
             modelBuilder.Entity<Cart>(entity =>
@@ -290,6 +296,8 @@ namespace EasyEat.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SpecialProduct_ProductID");
             });
+
         }
     }
 }
+

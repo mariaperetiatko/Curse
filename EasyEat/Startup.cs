@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using EasyEat.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Identity;
 
 namespace EasyEat
 {
@@ -20,6 +21,11 @@ namespace EasyEat
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            using (var context = new EatContext())
+            {
+                context.Database.EnsureCreated();
+            }
         }
 
         
@@ -27,35 +33,16 @@ namespace EasyEat
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-            {
-                options.RequireHttpsMetadata = false;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    // укзывает, будет ли валидироваться издатель при валидации токена
-                    ValidateIssuer = true,
-                    // строка, представляющая издателя
-                    ValidIssuer = AuthOptions.ISSUER,
-
-                    // будет ли валидироваться потребитель токена
-                    ValidateAudience = true,
-                    // установка потребителя токена
-                    ValidAudience = AuthOptions.AUDIENCE,
-                    // будет ли валидироваться время существования
-                    ValidateLifetime = true,
-
-                    // установка ключа безопасности
-                    IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
-                    // валидация ключа безопасности
-                    ValidateIssuerSigningKey = true,
-                };
-        });
-
-            services.AddMvc();
-            var connection = @"Server=DESKTOP-LLK7E72\SQLEXPRESS;Database=Eat;Trusted_Connection=True;ConnectRetryCount=1";
+        {                  
+            var connection = @"Server=DESKTOP-LLK7E72\SQLEXPRESS;Database=Eat;Trusted_Connection=True;ConnectRetryCount=0";
             services.AddDbContext<EatContext>(options => options.UseSqlServer(connection));
+
+            services.AddIdentityCore<User>(options => { });
+            new IdentityBuilder(typeof(User), typeof(IdentityRole), services)
+                .AddRoleManager<RoleManager<IdentityRole>>()
+                .AddSignInManager<SignInManager<User>>()
+                .AddEntityFrameworkStores<EatContext>();
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,7 +50,7 @@ namespace EasyEat
         {
             app.UseDefaultFiles();
             app.UseStaticFiles();
-          
+
 
             app.UseAuthentication();
             app.UseMvc();
