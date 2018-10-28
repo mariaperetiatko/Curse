@@ -18,7 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
 using AutoMapper;
 using FluentValidation.AspNetCore;
-
+using EasyEat.Auth;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 
@@ -53,38 +53,46 @@ namespace EasyEat
             services.AddDbContext<EatContext>(options => options.UseSqlServer(connection));
 
             //services.TryAddTransient<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IJwtFactory, JwtFactory>();
 
+            // Register the ConfigurationBuilder instance of FacebookAuthSettings
+           
+
+            services.TryAddTransient<IHttpContextAccessor, HttpContextAccessor>();
+
+            // jwt wire up
             // Get options from app settings
             var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
 
             // Configure JwtIssuerOptions
             services.Configure<JwtIssuerOptions>(options =>
             {
-            options.Issuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
-            options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
-            options.SigningCredentials = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256);
+                options.Issuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
+                options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
+                options.SigningCredentials = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256);
             });
-            //////
+
             var tokenValidationParameters = new TokenValidationParameters
             {
-            ValidateIssuer = true,
-            ValidIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)],
+                ValidateIssuer = true,
+                ValidIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)],
 
-            ValidateAudience = true,
-            ValidAudience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)],
+                ValidateAudience = true,
+                ValidAudience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)],
 
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = _signingKey,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = _signingKey,
 
-            RequireExpirationTime = false,
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero
+                RequireExpirationTime = false,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
             };
 
             services.AddAuthentication(options =>
             {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
             }).AddJwtBearer(configureOptions =>
             {
                 configureOptions.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];

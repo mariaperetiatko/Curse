@@ -21,6 +21,7 @@ namespace EasyEat.Controllers
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 
+
         public AccountController(UserManager<User> userManager, IMapper mapper, EatContext appDbContext)
         {
             _userManager = userManager;
@@ -50,6 +51,7 @@ namespace EasyEat.Controllers
                 LastName = model.LastName,
                 Phone = model.Phone,
                 IsDeleted = 0
+                
             });
             await _appDbContext.SaveChangesAsync();
 
