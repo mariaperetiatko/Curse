@@ -52,13 +52,6 @@ namespace EasyEat
             var connection = @"Server=DESKTOP-LLK7E72\SQLEXPRESS;Database=Eat;Trusted_Connection=True;ConnectRetryCount=0";
             services.AddDbContext<EatContext>(options => options.UseSqlServer(connection));
 
-            //services.AddIdentityCore<User>(options => { });
-            //new IdentityBuilder(typeof(User), typeof(IdentityRole), services)
-            //    .AddRoleManager<RoleManager<IdentityRole>>()
-            //    .AddSignInManager<SignInManager<User>>()
-            //    .AddEntityFrameworkStores<EatContext>();
-            //services.AddMvc();
-
             //services.TryAddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
             // Get options from app settings
@@ -105,8 +98,6 @@ namespace EasyEat
                 options.AddPolicy("User", policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
             });
 
-
-
             // add identity
             var builder = services.AddIdentityCore<User>(o =>
             {
@@ -127,11 +118,32 @@ namespace EasyEat
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
+            app.UseExceptionHandler(
+                builder =>
+                {
+                    builder.Run(
+                        async context =>
+                            {
+                                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                                context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+
+                                var error = context.Features.Get<IExceptionHandlerFeature>();
+                                if (error != null)
+                                {
+                                   // context.Response.AddApplicationError(error.Error.Message);
+                                    await context.Response.WriteAsync(error.Error.Message).ConfigureAwait(false);
+                                }
+                            });
+                });
 
             app.UseAuthentication();
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseMvc();
         }
     }
