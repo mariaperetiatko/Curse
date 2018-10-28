@@ -21,6 +21,8 @@ namespace EasyEat.Models
         public int? FoodStyleId { get; set; }
         public int? Balance { get; set; }
         public int IsDeleted { get; set; }
+        public string IdentityId { get; set; }
+        public User Identity { get; set; }  // navigation property
 
         public virtual FoodStyle FoodStyle { get; set; }
         public virtual Cart Cart { get; set; }

@@ -45,6 +45,7 @@ namespace EasyEat.Controllers
 
             await _appDbContext.Customer.AddAsync(new Customer
             {
+                IdentityId = userIdentity.Id,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Phone = model.Phone,

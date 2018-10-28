@@ -27,7 +27,8 @@ namespace EasyEat.Controllers
             _jwtOptions = jwtOptions.Value;
         }
 
-        // POST api/auth/login
+        // POST 
+        
         [HttpPost("login")]
         public async Task<IActionResult> Post([FromBody]CredentialsViewModel credentials)
         {

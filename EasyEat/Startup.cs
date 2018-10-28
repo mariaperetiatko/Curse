@@ -16,6 +16,14 @@ using EasyEat.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
+using AutoMapper;
+using FluentValidation.AspNetCore;
+
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
+
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
 
 namespace EasyEat
 {
@@ -44,13 +52,14 @@ namespace EasyEat
             var connection = @"Server=DESKTOP-LLK7E72\SQLEXPRESS;Database=Eat;Trusted_Connection=True;ConnectRetryCount=0";
             services.AddDbContext<EatContext>(options => options.UseSqlServer(connection));
 
-            services.AddIdentityCore<User>(options => { });
-            new IdentityBuilder(typeof(User), typeof(IdentityRole), services)
-                .AddRoleManager<RoleManager<IdentityRole>>()
-                .AddSignInManager<SignInManager<User>>()
-                .AddEntityFrameworkStores<EatContext>();
-            services.AddMvc();
+            //services.AddIdentityCore<User>(options => { });
+            //new IdentityBuilder(typeof(User), typeof(IdentityRole), services)
+            //    .AddRoleManager<RoleManager<IdentityRole>>()
+            //    .AddSignInManager<SignInManager<User>>()
+            //    .AddEntityFrameworkStores<EatContext>();
+            //services.AddMvc();
 
+            //services.TryAddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
             // Get options from app settings
             var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
@@ -62,7 +71,7 @@ namespace EasyEat
             options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
             options.SigningCredentials = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256);
             });
-
+            //////
             var tokenValidationParameters = new TokenValidationParameters
             {
             ValidateIssuer = true,
@@ -93,9 +102,27 @@ namespace EasyEat
             // api user claim policy
             services.AddAuthorization(options =>
             {
-            options.AddPolicy("ApiUser", policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
+                options.AddPolicy("User", policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
             });
-                    }
+
+
+
+            // add identity
+            var builder = services.AddIdentityCore<User>(o =>
+            {
+                // configure identity options
+                o.Password.RequireDigit = false;
+                o.Password.RequireLowercase = false;
+                o.Password.RequireUppercase = false;
+                o.Password.RequireNonAlphanumeric = false;
+                o.Password.RequiredLength = 6;
+            });
+            builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), builder.Services);
+            builder.AddEntityFrameworkStores<EatContext>().AddDefaultTokenProviders();
+
+            services.AddAutoMapper();
+            services.AddMvc().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
+        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
