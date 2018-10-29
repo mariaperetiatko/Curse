@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using EasyEat.Auth;
 
 
 namespace EasyEat.Controllers
@@ -35,8 +34,8 @@ namespace EasyEat.Controllers
             
             return "kk";
         }
-        // POST 
 
+        // POST api/auth/login
         [HttpPost("login")]
         public async Task<IActionResult> Post([FromBody]CredentialsViewModel credentials)
         {
@@ -62,13 +61,14 @@ namespace EasyEat.Controllers
 
             // get the user to verifty
             var userToVerify = await _userManager.FindByNameAsync(userName);
+            var Roles = await _userManager.GetRolesAsync(userToVerify);
 
             if (userToVerify == null) return await Task.FromResult<ClaimsIdentity>(null);
 
             // check the credentials
             if (await _userManager.CheckPasswordAsync(userToVerify, password))
             {
-                return await Task.FromResult(_jwtFactory.GenerateClaimsIdentity(userName, userToVerify.Id));
+                return await Task.FromResult(_jwtFactory.GenerateClaimsIdentity(userName, userToVerify.Id, Roles));
             }
 
             // Credentials are invalid, or account doesn't exist

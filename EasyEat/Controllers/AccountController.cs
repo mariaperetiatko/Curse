@@ -44,6 +44,8 @@ namespace EasyEat.Controllers
 
             if (!result.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
 
+            await _userManager.AddToRoleAsync(userIdentity, model.Role);
+
             await _appDbContext.Customer.AddAsync(new Customer
             {
                 IdentityId = userIdentity.Id,

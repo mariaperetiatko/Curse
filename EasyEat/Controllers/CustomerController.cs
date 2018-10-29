@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using EasyEat.Models;
 using EasyEat.Repositories;
+using Microsoft.AspNetCore.Authorization;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace EasyEat
 {
@@ -22,6 +22,7 @@ namespace EasyEat
 
 
         // GET: api/<controller>
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IEnumerable<Customer> Get()
         {
@@ -29,6 +30,7 @@ namespace EasyEat
         }
 
         // GET api/<controller>/5
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
@@ -58,8 +60,7 @@ namespace EasyEat
             if (customer == null)
             {
                 return BadRequest();
-            }
-            
+            }            
             db.Update(customer);
             db.Save();
             return Ok(customer);

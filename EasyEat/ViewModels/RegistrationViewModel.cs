@@ -12,5 +12,6 @@ namespace EasyEat.ViewModels
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public long Phone { get; set; }
+        public string Role { get; set; }
     }
 }

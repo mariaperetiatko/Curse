@@ -42,7 +42,7 @@ namespace EasyEat.Models
         public TimeSpan ValidFor { get; set; } = TimeSpan.FromMinutes(120);
 
 
-
+        public string[] Roles { get; set; } = { "Admin", "RestaurantOwner", "Custonmer" };
         /// <summary>
         /// "jti" (JWT ID) Claim (default ID is a GUID)
         /// </summary>

@@ -11,13 +11,25 @@ namespace EasyEat.Helpers
         {
             public static class JwtClaimIdentifiers
             {
-                public const string Rol = "rol", Id = "id";
+                public const string Rol = "rol", Id = "id", Roles = "roles";
+
             }
 
             public static class JwtClaims
             {
                 public const string ApiAccess = "api_access";
             }
+
+            public static class ClaimRole
+            {
+                public static IList<string> UserRoleClaims { get; set; } = new List<string>
+                                                            {
+                                                                "Admin",
+                                                                "User"
+
+                                                            };
+            }
+
         }
     }
 }

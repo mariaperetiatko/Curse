@@ -12,7 +12,7 @@ using EasyEat.Models;
 
 namespace EasyEat.Controllers
 {
-    [Authorize(Policy = "User")]
+    [Authorize(Roles = "Member")]
     [Route("api/[controller]/[action]")]
     public class DashboardController : Controller
     {

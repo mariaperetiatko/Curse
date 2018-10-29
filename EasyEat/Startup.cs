@@ -48,9 +48,12 @@ namespace EasyEat
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {                  
+        {
+            services.AddCors();
             var connection = @"Server=DESKTOP-LLK7E72\SQLEXPRESS;Database=Eat;Trusted_Connection=True;ConnectRetryCount=0";
             services.AddDbContext<EatContext>(options => options.UseSqlServer(connection));
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<EatContext>();
 
             //services.TryAddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IJwtFactory, JwtFactory>();
@@ -152,6 +155,12 @@ namespace EasyEat
             app.UseAuthentication();
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseCors(builder => builder
+                      .AllowAnyOrigin()
+                      .AllowAnyMethod()
+                      .AllowAnyHeader()
+                      .AllowCredentials()
+          );
             app.UseMvc();
         }
     }
