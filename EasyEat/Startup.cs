@@ -21,9 +21,10 @@ using FluentValidation.AspNetCore;
 using EasyEat.Auth;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
-
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-
+using Microsoft.Extensions.Localization;
 
 namespace EasyEat
 {
@@ -108,6 +109,8 @@ namespace EasyEat
             {
                 options.AddPolicy("User", policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
             });
+            services.AddTransient<IStringLocalizer, EFStringLocalizer>();
+            services.AddSingleton<IStringLocalizerFactory>(new EFStringLocalizerFactory(connection));
 
             // add identity
             var builder = services.AddIdentityCore<User>(o =>
@@ -123,7 +126,12 @@ namespace EasyEat
             builder.AddEntityFrameworkStores<EatContext>().AddDefaultTokenProviders();
 
             services.AddAutoMapper();
-            services.AddMvc().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
+            services.AddMvc().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
+                .AddDataAnnotationsLocalization(options => {
+                    options.DataAnnotationLocalizerProvider = (type, factory) =>
+                    factory.Create(null);
+                })
+                .AddViewLocalization(); ;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -133,6 +141,19 @@ namespace EasyEat
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            var supportedCultures = new[]
+           {
+                new CultureInfo("en"),
+                new CultureInfo("ru"),
+                new CultureInfo("de")
+            };
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("ru"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
 
             app.UseExceptionHandler(
                 builder =>

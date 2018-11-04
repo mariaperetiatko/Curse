@@ -33,8 +33,11 @@ namespace EasyEat.Models
         public virtual DbSet<Restaurant> Restaurant { get; set; }
         public virtual DbSet<SpecialProduct> SpecialProduct { get; set; }
         public virtual DbSet<User> User { get; set; }
+        public DbSet<Culture> Cultures { get; set; }
+        public DbSet<Resource> Resources { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {

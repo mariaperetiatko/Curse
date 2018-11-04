@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using EasyEat.Models;
+using Microsoft.Extensions.Localization;
+using EasyEat.Helpers;
 
 namespace EasyEat.Controllers
 {
@@ -18,11 +20,21 @@ namespace EasyEat.Controllers
     {
         private readonly ClaimsPrincipal _caller;
         private readonly EatContext _appDbContext;
+        private readonly IStringLocalizer _localizer;
 
-        public DashboardController(UserManager<User> userManager, EatContext appDbContext, IHttpContextAccessor httpContextAccessor)
+        public DashboardController(UserManager<User> userManager, EatContext appDbContext,
+            IHttpContextAccessor httpContextAccessor, IStringLocalizer localizer)
         {
             _caller = httpContextAccessor.HttpContext.User;
             _appDbContext = appDbContext;
+            _localizer = localizer;
+
+        }
+
+        public string  Test()
+        {
+            string message = _localizer["Message"];
+            return message;
         }
 
         // GET api/dashboard/home

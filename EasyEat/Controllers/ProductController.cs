@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EasyEat.Controllers
 {
+    [Authorize]
     [Produces("application/json")]
     [Route("api/Product")]
     public class ProductController : Controller

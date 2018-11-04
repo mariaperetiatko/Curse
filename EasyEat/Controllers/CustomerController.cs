@@ -54,6 +54,7 @@ namespace EasyEat
         }
 
         // PUT api/<controller>
+        [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpPut]
         public IActionResult Update([FromBody]Customer customer)
         {
@@ -65,8 +66,9 @@ namespace EasyEat
             db.Save();
             return Ok(customer);
         }
-        
+
         // DELETE api/<controller>/5
+        [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
