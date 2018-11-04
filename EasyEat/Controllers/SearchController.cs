@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using EasyEat.Models;
 using EasyEat.Repositories;
 using EasyEat.BusinessLogic;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace EasyEat.Controllers
 {
+    [Authorize]
     [Produces("application/json")]
     [Route("api/Search")]
     public class SearchController : Controller

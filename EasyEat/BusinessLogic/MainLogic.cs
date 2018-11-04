@@ -30,6 +30,15 @@ namespace EasyEat.BusinessLogic
             return costs.Sum();
         }
 
+        public static int GetTotalCaloricValue(Cart cart)
+        {
+            IEnumerable<CartPart> cartParts = cart.CartPart;
+            List<Dish> dishes = cartParts.Select(x => x.Dish).ToList();
+            int totalCaloricValue = dishes.Select(x => x.Ingredient.Select(y => y.Product.CaloricValue).Sum()).Sum();
+            
+            return totalCaloricValue;
+        }
+
 
         public static int RefreshBalance(int balance, int moneyValue)
         {

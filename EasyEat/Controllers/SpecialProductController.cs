@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using EasyEat.Models;
 using EasyEat.Repositories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EasyEat.Controllers
 {
+    [Authorize(Roles = "Admin, Member")]
     [Produces("application/json")]
-    [Route("api/Product")]
+    [Route("api/SpecialProduct")]
     public class SpecialProductController : Controller
     {
         IRepository<SpecialProduct> db;
@@ -20,7 +22,7 @@ namespace EasyEat.Controllers
             this.db = new SpecialProductRepository();
         }
 
-        [HttpPost]
+        [HttpPost("CreateAllowed")]
         public IActionResult CreateAllowed([FromBody]SpecialProduct specialProduct)
         {
             if (specialProduct == null)
@@ -33,7 +35,7 @@ namespace EasyEat.Controllers
             return Ok(specialProduct);
         }
 
-        [HttpPost]
+        [HttpPost("CreateNotAllowed")]
         public IActionResult CreateNotAllowed([FromBody]SpecialProduct specialProduct)
         {
             if (specialProduct == null)
@@ -42,6 +44,18 @@ namespace EasyEat.Controllers
             }
             specialProduct.Allowance = 0;
             db.Create(specialProduct);
+            db.Save();
+            return Ok(specialProduct);
+        }
+
+        [HttpPut]
+        public IActionResult Change([FromBody]SpecialProduct specialProduct)
+        {
+            if (specialProduct == null)
+            {
+                return BadRequest();
+            }
+            db.Update(specialProduct);
             db.Save();
             return Ok(specialProduct);
         }

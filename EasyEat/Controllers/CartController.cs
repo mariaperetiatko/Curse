@@ -6,85 +6,83 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using EasyEat.Models;
 using EasyEat.Repositories;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-
+using EasyEat.BusinessLogic;
 
 namespace EasyEat.Controllers
 {
-    [Authorize]
     [Produces("application/json")]
-    [Route("api/Product")]
-    public class ProductController : Controller
+    [Route("api/Cart")]
+    public class CartController : Controller
     {
-        IRepository<Product> db;
+        IRepository<Cart> db;
 
-        public ProductController()
+        public CartController()
         {
-            db = new ProductRepository();
+            db = new CartRepository();
         }
 
         // GET: api/<controller>
+        [Authorize(Roles = "Admin")]
         [HttpGet]
-        public IEnumerable<Product> Get()
+        public IEnumerable<Cart> Get()
         {
             return db.GetEntityList();
         }
 
         // GET api/<controller>/5
+        [Authorize(Roles = "Admin, Member")]
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            Product product = db.GetEntity(id);
-            if (product == null)
+            Cart cart = db.GetEntity(id);
+            if (cart == null)
                 return NotFound();
-            return new ObjectResult(product);
+            return new ObjectResult(cart);
         }
 
-        // POST api/<controller>
-        [Authorize(Roles = "Admin, RestaurantOwner")]
+        /*// POST api/<controller>
+        [Authorize(Roles = "Admin, Member")]
         [HttpPost]
-        public IActionResult Create([FromBody]Product product)
+        public IActionResult Create([FromBody]Cart cart)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            db.Create(product);
+            db.Create(cart);
             db.Save();
-            return Ok(product);
-        }
+            return Ok(cart);
+        }*/
 
         // PUT api/<controller>
-        [Authorize(Roles = "Admin, RestaurantOwner")]
+        [Authorize(Roles = "Admin, Member")]
         [HttpPut]
-        public IActionResult Update([FromBody]Product product)
+        public IActionResult Update([FromBody]Cart cart)
         {
-            if (product == null)
+            if (cart == null)
             {
                 return BadRequest();
             }
-
-            db.Update(product);
+            cart.TotalCaloricValue = MainLogic.GetTotalCaloricValue(cart);
+            db.Update(cart);
             db.Save();
-            return Ok(product);
+            return Ok(cart);
         }
 
         // DELETE api/<controller>/5
-        [Authorize(Roles = "Admin, RestaurantOwner")]
+        [Authorize(Roles = "Admin, Member")]
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            Product product = db.GetEntity(id);
-            if (product == null)
+            Cart cart = db.GetEntity(id);
+            if (cart == null)
             {
                 return NotFound();
             }
             db.Delete(id);
             db.Save();
-            return Ok(product);
+            return Ok(cart);
         }
     }
 }

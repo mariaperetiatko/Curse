@@ -46,15 +46,30 @@ namespace EasyEat.Controllers
 
             await _userManager.AddToRoleAsync(userIdentity, model.Role);
 
-            await _appDbContext.Customer.AddAsync(new Customer
+            if (model.Role == "Member")
             {
-                IdentityId = userIdentity.Id,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Phone = model.Phone,
-                IsDeleted = 0
-                
+                Customer customer = new Customer
+                {
+                    IdentityId = userIdentity.Id,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Phone = model.Phone,
+                    IsDeleted = 0
+
+                };
+                await _appDbContext.Customer.AddAsync(customer);
+
+                await _appDbContext.Cart.AddAsync(new Cart
+                {
+                    CustomerId = customer.Id,
+                    Customer = customer,
+                    TotalCaloricValue = 0,            
+                    AddressId = 0,
+                    MealTimeId = 0,
+                    DeliveryDate = DateTime.Now
+
             });
+            }        
             await _appDbContext.SaveChangesAsync();
 
             return new OkObjectResult("Account created");

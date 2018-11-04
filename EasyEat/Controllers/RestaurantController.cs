@@ -6,9 +6,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using EasyEat.Models;
 using EasyEat.Repositories;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace EasyEat.Controllers
 {
+    [Authorize]
     [Produces("application/json")]
     [Route("api/Restaurant")]
     public class RestaurantController : Controller
@@ -38,6 +41,7 @@ namespace EasyEat.Controllers
         }
 
         // POST api/<controller>
+        [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpPost]
         public IActionResult Create(Restaurant restaurant)
         {
@@ -51,6 +55,7 @@ namespace EasyEat.Controllers
         }
 
         // PUT api/<controller>
+        [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpPut]
         public IActionResult Update([FromBody]Restaurant restaurant)
         {
@@ -65,6 +70,7 @@ namespace EasyEat.Controllers
         }
 
         // DELETE api/<controller>/5
+        [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
