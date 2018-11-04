@@ -57,11 +57,11 @@ namespace EasyEat
                     },
                     new Culture
                     {
-                        Name = "de",
+                        Name = "uk",
                         Resources = new List<Resource>()
                         {
-                            new Resource { Key = "Header", Value = "Halo" },
-                            new Resource { Key = "Message", Value = "Willkommen" }
+                            new Resource { Key = "Header", Value = "Привіт" },
+                            new Resource { Key = "Message", Value = "Ласкаво просимо" }
                         }
                     }
                 );

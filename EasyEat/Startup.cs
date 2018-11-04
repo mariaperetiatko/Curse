@@ -146,7 +146,7 @@ namespace EasyEat
            {
                 new CultureInfo("en"),
                 new CultureInfo("ru"),
-                new CultureInfo("de")
+                new CultureInfo("uk")
             };
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
