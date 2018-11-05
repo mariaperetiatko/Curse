@@ -7,41 +7,41 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EasyEat.Repositories
 {
-    public class FoodOrderRepository : IRepository<FoodOrder>
+    public class FoodStyleProductRepository : IRepository<FoodStyleProduct>
     {
         private EatContext db;
 
-        public FoodOrderRepository()
+        public FoodStyleProductRepository()
         {
             this.db = new EatContext();
         }
 
-        public IEnumerable<FoodOrder> GetEntityList()
+        public IEnumerable<FoodStyleProduct> GetEntityList()
         {
-            return db.FoodOrder.Include(x => x.Address).Include(x => x.Customer);
-        }
-    
-        public FoodOrder GetEntity(object id)
-        {
-            return db.FoodOrder.Include(x => x.Address).Include(x => x.Customer)
-                .SingleOrDefault(x => x.Id == (int)id);
+            return db.FoodStyleProduct.Include(x => x.FoodStyle).Include(x => x.Product);
         }
 
-        public void Create(FoodOrder foodOrder)
+        public FoodStyleProduct GetEntity(object id)
         {
-            db.FoodOrder.Add(foodOrder);
+            return db.FoodStyleProduct.Include(x => x.FoodStyle).Include(x => x.Product)
+                .SingleOrDefault(x => new { x.FoodStyleId, x.ProductId } == id);
         }
 
-        public void Update(FoodOrder foodOrder)
+        public void Create(FoodStyleProduct foodStyleProduct)
         {
-            db.Entry(foodOrder).State = EntityState.Modified;
+            db.FoodStyleProduct.Add(foodStyleProduct);
+        }
+
+        public void Update(FoodStyleProduct foodStyleProduct)
+        {
+            db.Entry(foodStyleProduct).State = EntityState.Modified;
         }
 
         public void Delete(object id)
         {
-            FoodOrder foodOrder = db.FoodOrder.Find(id);
-            if (foodOrder != null)
-                db.FoodOrder.Remove(foodOrder);
+            FoodStyleProduct foodStyleProduct = db.FoodStyleProduct.Find(id);
+            if (foodStyleProduct != null)
+                db.FoodStyleProduct.Remove(foodStyleProduct);
         }
 
         public void Save()

@@ -31,7 +31,7 @@ namespace EasyEat.BusinessLogic
             Cart cart = customer.Cart;
             List<CartPart> cartPart = cart.CartPart.ToList();
             int totalCost = cartPart.Select(x => x.Menu.Cost * x.DishCount).Sum();
-            return totalCost;
+            return totalCost ;
         }
 
         public static int GetTotalCaloricValue(Cart cart)
@@ -67,10 +67,10 @@ namespace EasyEat.BusinessLogic
         }
 
 
-        public static List<Restaurant> FindAppropriateRestaurants(Customer customer, List<Restaurant> restaurantsInRadius, 
+        public static List<int> FindAppropriateRestaurants(Customer customer, List<Restaurant> restaurantsInRadius, 
             List<Product> products)
         {
-            List<Restaurant> resultingRestaurants = new List<Restaurant>();
+            List<int> resultingRestaurants = new List<int>();
             List<int> allowedProductIds = customer.SpecialProduct.Where(x => x.Allowance == 1)
                 .Select(x => x.ProductId).ToList();
             List<Product> allowedProducts = products.Where(x => allowedProductIds.Contains(x.Id))
@@ -92,7 +92,7 @@ namespace EasyEat.BusinessLogic
                     }
                     if (isAppropriate)
                     {
-                        resultingRestaurants.Add(restaurant);
+                        resultingRestaurants.Add(restaurant.Id);
                         break;
                     }
                 }
@@ -101,9 +101,9 @@ namespace EasyEat.BusinessLogic
         }
 
 
-        public static List<Restaurant> FindByFavourites(Customer customer, List<Restaurant> restaurantsInRadius)
+        public static List<int> FindByFavourites(Customer customer, List<Restaurant> restaurantsInRadius)
         {
-            List<Restaurant> resultingRestaurants = new List<Restaurant>();
+            List<int> resultingRestaurants = new List<int>();
             List<int> favouriteDishesId = customer.FavouriteDish.Select(x => x.DishId).ToList();
 
             foreach (Restaurant restaurant in restaurantsInRadius)
@@ -122,7 +122,7 @@ namespace EasyEat.BusinessLogic
 
                 if (isAppropriate)
                 {
-                    resultingRestaurants.Add(restaurant);
+                    resultingRestaurants.Add(restaurant.Id);
                     break;
                 }
             }

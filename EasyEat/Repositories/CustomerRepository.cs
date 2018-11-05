@@ -18,12 +18,17 @@ namespace EasyEat.Repositories
 
         public IEnumerable<Customer> GetEntityList()
         {
-            return db.Customer;
+            return db.Customer.Include(x => x.FoodStyle).Include(x => x.Cart)
+                .Include(x => x.DeliveryAddress).Include(x => x.FavouriteDish)
+                .Include(x => x.FoodOrder).Include(x => x.SpecialProduct);
         }
 
         public Customer GetEntity(object id)
         {
-            return db.Customer.Find(id);
+            return db.Customer.Include(x => x.FoodStyle).Include(x => x.Cart)
+                .Include(x => x.DeliveryAddress).Include(x => x.FavouriteDish)
+                .Include(x => x.FoodOrder).Include(x => x.SpecialProduct)
+                .SingleOrDefault(x => x.Id == (int)id);
         }
 
         public void Create(Customer customer)

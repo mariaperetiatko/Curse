@@ -18,12 +18,15 @@ namespace EasyEat.Repositories
 
         public IEnumerable<DeliveryAddress> GetEntityList()
         {
-            return db.DeliveryAddress;
+            return db.DeliveryAddress.Include(x => x.Customer).Include(x => x.Cart)
+                .Include(x => x.FoodOrder);
         }
+       
 
         public DeliveryAddress GetEntity(object id)
         {
-            return db.DeliveryAddress.Find(id);
+            return db.DeliveryAddress.Include(x => x.Customer).Include(x => x.Cart)
+                .Include(x => x.FoodOrder).SingleOrDefault(x => x.Id == (int)id);
         }
 
         public void Create(DeliveryAddress deliveryAddress)

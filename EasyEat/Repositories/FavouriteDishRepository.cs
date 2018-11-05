@@ -18,12 +18,13 @@ namespace EasyEat.Repositories
 
         public IEnumerable<FavouriteDish> GetEntityList()
         {
-            return db.FavouriteDish;
+            return db.FavouriteDish.Include(x => x.Customer).Include(x => x.Dish);
         }
 
         public FavouriteDish GetEntity(object id)
         {
-            return db.FavouriteDish.Find(id);
+            return db.FavouriteDish.Include(x => x.Customer).Include(x => x.Dish)
+                .SingleOrDefault(x => new { x.CustomerId, x.DishId } == id);
         }
 
         public void Create(FavouriteDish favouriteDish)

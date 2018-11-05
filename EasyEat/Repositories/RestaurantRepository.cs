@@ -18,12 +18,12 @@ namespace EasyEat.Repositories
 
         public IEnumerable<Restaurant> GetEntityList()
         {
-            return db.Restaurant;
+            return db.Restaurant.Include(x => x.Menu);
         }
 
         public Restaurant GetEntity(object id)
         {
-            return db.Restaurant.Find(id);
+            return db.Restaurant.Include(x => x.Menu).SingleOrDefault(x => x.Id == (int)id);
         }
 
         public void Create(Restaurant restaurant)

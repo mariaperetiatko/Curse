@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace EasyEat.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Produces("application/json")]
     [Route("api/Search")]
     public class SearchController : Controller
@@ -52,21 +52,20 @@ namespace EasyEat.Controllers
             List<Restaurant> restaurantsInRadius = MainLogic.FindInRadius(deliveryAddress.Xcoordinate,
                 deliveryAddress.Ycoordinate, allRestaurants, radius);
 
-            List<Restaurant> appropriateRestaurants = MainLogic.FindAppropriateRestaurants(customer,
+            List<int> appropriateRestaurants = MainLogic.FindAppropriateRestaurants(customer,
                 restaurantsInRadius, products);
-            
+
             return new ObjectResult(appropriateRestaurants);
         }
 
         // GET api/<controller>/5
         [HttpGet("{customerId}, {radius}, {addressId}")]
-        [ActionName("Favourite")]
+        [Route("Favourite")]
         public IActionResult FindRestaurantsByFavourite(int customerId, int radius, int addressId)
         {
             Customer customer = CustomerDb.GetEntity(customerId);
             DeliveryAddress deliveryAddress = DeliveryAddressDb.GetEntity(addressId);
             List<Restaurant> allRestaurants = RestaurantDb.GetEntityList().ToList();
-           // List<Product> products = ProductDb.GetEntityList().ToList();
 
             if (customer == null || deliveryAddress == null || allRestaurants == null)
             {
@@ -76,10 +75,11 @@ namespace EasyEat.Controllers
             List<Restaurant> restaurantsInRadius = MainLogic.FindInRadius(deliveryAddress.Xcoordinate,
                 deliveryAddress.Ycoordinate, allRestaurants, radius);
 
-            List<Restaurant> favouriteRestaurants = MainLogic.FindByFavourites(customer,
+            List<int> favouriteRestaurants = MainLogic.FindByFavourites(customer,
                 restaurantsInRadius);
 
-            return new ObjectResult(favouriteRestaurants);
+            return new OkObjectResult(favouriteRestaurants);
         }
+
     }
 }

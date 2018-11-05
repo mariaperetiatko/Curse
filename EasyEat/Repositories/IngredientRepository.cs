@@ -18,12 +18,13 @@ namespace EasyEat.Repositories
 
         public IEnumerable<Ingredient> GetEntityList()
         {
-            return db.Ingredient;
+            return db.Ingredient.Include(x => x.Dish).Include(x => x.Product);
         }
 
         public Ingredient GetEntity(object id)
         {
-            return db.Ingredient.Find(id);
+            return db.Ingredient.Include(x => x.Dish).Include(x => x.Product)
+                .SingleOrDefault(x => new { x.DishId, x.ProductId } == id);
         }
 
         public void Create(Ingredient ingredient)

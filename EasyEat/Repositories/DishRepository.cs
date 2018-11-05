@@ -19,12 +19,14 @@ namespace EasyEat.Repositories
 
         public IEnumerable<Dish> GetEntityList()
         {
-            return db.Dish;
+            return db.Dish.Include(x => x.FavouriteDish).Include(x => x.Ingredient)
+                .Include(x => x.Menu);
         }
 
         public Dish GetEntity(object id)
         {
-            return db.Dish.Find(id);
+            return db.Dish.Include(x => x.FavouriteDish).Include(x => x.Ingredient)
+                .Include(x => x.Menu).SingleOrDefault(x => x.Id == (int)id);
         }
 
         public void Create(Dish dish)
