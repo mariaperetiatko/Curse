@@ -25,11 +25,14 @@ namespace EasyEat.BusinessLogic
         }
 
 
-        //public static int GetTotalCost(FoodOrder foodOrder)
-        //{
-        //    List<int> a = foodOrder.Customer.
-        //    return 0 ;
-        //}
+        public static int GetTotalCost(FoodOrder foodOrder)
+        {
+            Customer customer = foodOrder.Customer;
+            Cart cart = customer.Cart;
+            List<CartPart> cartPart = cart.CartPart.ToList();
+            int totalCost = cartPart.Select(x => x.Menu.Cost * x.DishCount).Sum();
+            return totalCost;
+        }
 
         public static int GetTotalCaloricValue(Cart cart)
         {
