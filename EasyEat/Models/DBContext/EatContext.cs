@@ -87,10 +87,10 @@ namespace EasyEat.Models
 
             modelBuilder.Entity<CartPart>(entity =>
             {
-                entity.HasKey(e => new { e.DishId, e.CartId })
+                entity.HasKey(e => new { e.MenuId, e.CartId })
                     .HasName("pk_CartPart");
 
-                entity.Property(e => e.DishId).HasColumnName("DishID");
+                entity.Property(e => e.MenuId).HasColumnName("MenuID");
 
                 entity.Property(e => e.CartId).HasColumnName("CartID");
 
@@ -100,11 +100,11 @@ namespace EasyEat.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_CartPart_CartID");
 
-                entity.HasOne(d => d.Dish)
+                entity.HasOne(d => d.Menu)
                     .WithMany(p => p.CartPart)
-                    .HasForeignKey(d => d.DishId)
+                    .HasForeignKey(d => d.MenuId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_CartPart_DishID");
+                    .HasConstraintName("FK_CartPart_MenuID");
             });
 
             modelBuilder.Entity<Customer>(entity =>
@@ -242,8 +242,8 @@ namespace EasyEat.Models
 
             modelBuilder.Entity<Menu>(entity =>
             {
-                entity.HasKey(e => new { e.DishId, e.RestaurantId })
-                    .HasName("pk_Menu");
+                //entity.HasKey(e => new { e.DishId, e.RestaurantId })
+                //    .HasName("pk_Menu");
 
                 entity.Property(e => e.DishId).HasColumnName("DishID");
 

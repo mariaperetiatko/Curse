@@ -7,7 +7,6 @@ namespace EasyEat.Models
     {
         public Dish()
         {
-            CartPart = new HashSet<CartPart>();
             FavouriteDish = new HashSet<FavouriteDish>();
             Ingredient = new HashSet<Ingredient>();
             Menu = new HashSet<Menu>();
@@ -17,7 +16,6 @@ namespace EasyEat.Models
         public string DishName { get; set; }
         public string DishDescription { get; set; }
 
-        public virtual ICollection<CartPart> CartPart { get; set; }
         public virtual ICollection<FavouriteDish> FavouriteDish { get; set; }
         public virtual ICollection<Ingredient> Ingredient { get; set; }
         public virtual ICollection<Menu> Menu { get; set; }

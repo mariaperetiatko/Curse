@@ -4,14 +4,16 @@ using EasyEat.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EasyEat.Migrations
 {
     [DbContext(typeof(EatContext))]
-    partial class EatContextModelSnapshot : ModelSnapshot
+    [Migration("20181105090759_menuFix")]
+    partial class menuFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,8 +48,8 @@ namespace EasyEat.Migrations
 
             modelBuilder.Entity("EasyEat.Models.CartPart", b =>
                 {
-                    b.Property<int>("MenuId")
-                        .HasColumnName("MenuID");
+                    b.Property<int>("DishId")
+                        .HasColumnName("DishID");
 
                     b.Property<int>("CartId")
                         .HasColumnName("CartID");
@@ -56,7 +58,7 @@ namespace EasyEat.Migrations
 
                     b.Property<int>("DishTemperature");
 
-                    b.HasKey("MenuId", "CartId")
+                    b.HasKey("DishId", "CartId")
                         .HasName("pk_CartPart");
 
                     b.HasIndex("CartId");
@@ -264,21 +266,16 @@ namespace EasyEat.Migrations
 
             modelBuilder.Entity("EasyEat.Models.Menu", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Cost");
-
                     b.Property<int>("DishId")
                         .HasColumnName("DishID");
 
                     b.Property<int>("RestaurantId")
                         .HasColumnName("RestaurantID");
 
-                    b.HasKey("Id");
+                    b.Property<int>("Cost");
 
-                    b.HasIndex("DishId");
+                    b.HasKey("DishId", "RestaurantId")
+                        .HasName("pk_Menu");
 
                     b.HasIndex("RestaurantId");
 
@@ -555,10 +552,10 @@ namespace EasyEat.Migrations
                         .HasForeignKey("CartId")
                         .HasConstraintName("FK_CartPart_CartID");
 
-                    b.HasOne("EasyEat.Models.Menu", "Menu")
+                    b.HasOne("EasyEat.Models.Dish", "Dish")
                         .WithMany("CartPart")
-                        .HasForeignKey("MenuId")
-                        .HasConstraintName("FK_CartPart_MenuID");
+                        .HasForeignKey("DishId")
+                        .HasConstraintName("FK_CartPart_DishID");
                 });
 
             modelBuilder.Entity("EasyEat.Models.Customer", b =>
