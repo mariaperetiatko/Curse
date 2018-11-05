@@ -18,13 +18,11 @@ namespace EasyEat.Controllers
     public class FoodOrderController : Controller
     {
         IRepository<FoodOrder> dbFoodOrder;
-        IRepository<Customer> dbCustomer;
 
 
         public FoodOrderController()
         {
             dbFoodOrder = new FoodOrderRepository();
-            dbCustomer = new CustomerRepository();
         }
 
         // GET: api/<controller>
@@ -89,22 +87,6 @@ namespace EasyEat.Controllers
             return Ok(foodOrder);
         }
 
-        public IActionResult Pay(int id)
-        {
-            FoodOrder foodOrder = dbFoodOrder.GetEntity(id);
-            if(foodOrder.TotalCost > foodOrder.Customer.Balance)
-            {
-                return new ObjectResult("You can not pay, your balance is less that total cost!");
-            }
-            int newBalance = MainLogic.RefreshBalance((int)foodOrder.Customer.Balance, -foodOrder.TotalCost);
-            Customer customer = foodOrder.Customer;
-            customer.Balance = newBalance;
-            dbCustomer.Update(customer);
-            dbCustomer.Save();
-            dbFoodOrder.Delete(id);
-            dbFoodOrder.Save();
-            return new ObjectResult("Succesful pay!");
-
-        }
+    
     }
 }
