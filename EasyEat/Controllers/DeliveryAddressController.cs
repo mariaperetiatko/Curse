@@ -16,21 +16,31 @@ namespace EasyEat.Controllers
     [Route("api/DeliveryAddress")]
     public class DeliveryAddressController : Controller
     {
-        IRepository<DeliveryAddress> db;
+        DeliveryAddressRepository db;
 
         public DeliveryAddressController()
         {
             db = new DeliveryAddressRepository();
-        }
+        }       
 
-        // GET: api/<controller>
+        [Authorize(Roles = "Member, Admin")]
         [HttpGet]
         public IEnumerable<DeliveryAddress> Get()
         {
-            return db.GetEntityList();
+            string userJWTId = User.FindFirst("id")?.Value;
+            Customer customer = db.GetCustomer(userJWTId);
+            if (customer == null)
+            {
+                return db.GetEntityList();
+            }
+            List<DeliveryAddress> addresses = db.GetAddressByCustomer(customer.Id).ToList();
+            for (int i = 0; i < addresses.Count(); i++)
+                addresses[i].Customer = null;
+            return addresses.AsEnumerable();
         }
 
         // GET api/<controller>/5
+        [Authorize(Roles = "Admin, Member")]
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
@@ -42,14 +52,23 @@ namespace EasyEat.Controllers
 
         // POST api/<controller>
         [HttpPost]
+        [Authorize(Roles = "Admin, Member")]
         public IActionResult Create([FromBody]DeliveryAddress deliveryAddress)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
+            string userJWTId = User.FindFirst("id")?.Value;
+            Customer customer = db.GetCustomer(userJWTId);
+            if (customer != null)
+            {
+                deliveryAddress.CustomerId = customer.Id;
+            }
+
             db.Create(deliveryAddress);
             db.Save();
+            deliveryAddress.Customer = null;
             return Ok(deliveryAddress);
         }
 
@@ -62,7 +81,15 @@ namespace EasyEat.Controllers
                 return BadRequest();
             }
 
+            string userJWTId = User.FindFirst("id")?.Value;
+            Customer customer = db.GetCustomer(userJWTId);
+            if (customer != null)
+            {
+                deliveryAddress.CustomerId = customer.Id;
+            }
+            deliveryAddress = null;
             db.Update(deliveryAddress);
+
             db.Save();
             return Ok(deliveryAddress);
         }

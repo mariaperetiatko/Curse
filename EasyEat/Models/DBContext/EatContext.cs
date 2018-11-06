@@ -215,12 +215,14 @@ namespace EasyEat.Models
 
             modelBuilder.Entity<Ingredient>(entity =>
             {
-                entity.HasKey(e => new { e.DishId, e.ProductId })
-                    .HasName("pk_Ingredient");
+                
 
                 entity.Property(e => e.DishId).HasColumnName("DishID");
-
                 entity.Property(e => e.ProductId).HasColumnName("ProductID");
+                entity.HasKey(e => new { e.DishId, e.ProductId })
+                    .HasName("pk_Ingredient");
+                entity.Property(e => e.DishId).ValueGeneratedNever();
+
 
                 entity.HasOne(d => d.Dish)
                     .WithMany(p => p.Ingredient)

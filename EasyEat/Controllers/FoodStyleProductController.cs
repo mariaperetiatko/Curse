@@ -6,83 +6,86 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using EasyEat.Models;
 using EasyEat.Repositories;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace EasyEat.Controllers
 {
     [Authorize]
     [Produces("application/json")]
-    [Route("api/Restaurant")]
-    public class RestaurantController : Controller
+    [Route("api/FoodStyleProduct")]
+    public class FoodStyleProductController : Controller
     {
-        IRepository<Restaurant> db;
+        IRepository<FoodStyleProduct> db;
 
-        public RestaurantController()
+        public FoodStyleProductController()
         {
-            db = new RestaurantRepository();
+            db = new FoodStyleProductRepository();
         }
 
         // GET: api/<controller>
-        [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpGet]
-        public IEnumerable<Restaurant> Get()
+        public IEnumerable<FoodStyleProduct> Get()
         {
             return db.GetEntityList();
         }
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        [ActionName("Get")]
+        public IActionResult Get([FromQuery]FoodStyleProductKey id)
         {
-            Restaurant restaurant = db.GetEntity(id);
-            if (restaurant == null)
+            FoodStyleProduct foodStyleProduct = db.GetEntity(id);
+            if (foodStyleProduct == null)
                 return NotFound();
-            return new ObjectResult(restaurant);
+            return new ObjectResult(foodStyleProduct);
         }
 
         // POST api/<controller>
         [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpPost]
-        public IActionResult Create([FromBody]Restaurant restaurant)
+        public IActionResult Create([FromBody]FoodStyleProduct foodStyleProduct)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            db.Create(restaurant);
+            db.Create(foodStyleProduct);
             db.Save();
-            return Ok(restaurant);
+            return Ok(foodStyleProduct);
         }
 
         // PUT api/<controller>
         [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpPut]
-        public IActionResult Update([FromBody]Restaurant restaurant)
+        public IActionResult Update([FromBody]FoodStyleProduct foodStyleProduct)
         {
-            if (restaurant == null)
+            if (foodStyleProduct == null)
             {
                 return BadRequest();
             }
 
-            db.Update(restaurant);
+            db.Update(foodStyleProduct);
             db.Save();
-            return Ok(restaurant);
+            return Ok(foodStyleProduct);
         }
 
         // DELETE api/<controller>/5
         [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        [ActionName("Delete")]
+        public IActionResult Delete([FromQuery]FoodStyleProductKey id)
         {
-            Restaurant restaurant = db.GetEntity(id);
-            if (restaurant == null)
+            FoodStyleProduct foodStyleProduct = db.GetEntity(id);
+            if (foodStyleProduct == null)
             {
                 return NotFound();
             }
             db.Delete(id);
             db.Save();
-            return Ok(restaurant);
+            return Ok(foodStyleProduct);
         }
     }
-}
+ }

@@ -15,7 +15,7 @@ namespace EasyEat.Controllers
     [Route("api/FavouriteDish")]
     public class FavouriteDishController : Controller
     {
-        IRepository<FavouriteDish> db;
+        FavouriteDishRepository db;
 
         public FavouriteDishController()
         {
@@ -27,13 +27,23 @@ namespace EasyEat.Controllers
         [HttpGet]
         public IEnumerable<FavouriteDish> Get()
         {
-            return db.GetEntityList();
+            string userJWTId = User.FindFirst("id")?.Value;
+            Customer customer = db.GetCustomer(userJWTId);
+            if (customer == null)
+            {
+                return db.GetEntityList();
+            }
+            List<FavouriteDish> favouriteDish = db.GetFavouriteDishByCustomer(customer.Id).ToList();
+            for (int i = 0; i < favouriteDish.Count(); i++)
+                favouriteDish[i].Customer = null;
+            return favouriteDish.AsEnumerable();
         }
 
         // GET api/<controller>/5
         [Authorize(Roles = "Admin, Member")]
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        [ActionName("Get")]
+        public IActionResult Get([FromQuery]FavouriteDishKey id)
         {
             FavouriteDish dish = db.GetEntity(id);
             if (dish == null)
@@ -50,8 +60,16 @@ namespace EasyEat.Controllers
             {
                 return BadRequest();
             }
+            string userJWTId = User.FindFirst("id")?.Value;
+            Customer customer = db.GetCustomer(userJWTId);
+            if (customer != null)
+            {
+                dish.CustomerId = customer.Id;
+            }
             db.Create(dish);
             db.Save();
+            dish.Customer = null;
+            dish.Dish = null;
             return Ok(dish);
         }
 
@@ -64,6 +82,12 @@ namespace EasyEat.Controllers
             {
                 return BadRequest();
             }
+            string userJWTId = User.FindFirst("id")?.Value;
+            Customer customer = db.GetCustomer(userJWTId);
+            if (customer != null)
+            {
+                dish.CustomerId = customer.Id;
+            }
             db.Update(dish);
             db.Save();
             return Ok(dish);
@@ -72,13 +96,21 @@ namespace EasyEat.Controllers
         // DELETE api/<controller>/5
         [Authorize(Roles = "Admin, Member")]
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        [ActionName("Delete")]
+        public IActionResult Delete([FromQuery]FavouriteDishKey id)
         {
+            string userJWTId = User.FindFirst("id")?.Value;
+            Customer customer = db.GetCustomer(userJWTId);
+            if (customer != null)
+            {
+                id.CustomerId = customer.Id;
+            }
             FavouriteDish dish = db.GetEntity(id);
             if (dish == null)
             {
                 return NotFound();
-            }
+            }        
+          
             db.Delete(id);
             db.Save();
             return Ok(dish);

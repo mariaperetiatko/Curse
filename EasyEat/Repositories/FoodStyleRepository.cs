@@ -18,10 +18,20 @@ namespace EasyEat.Repositories
 
         public IEnumerable<FoodStyle> GetEntityList()
         {
-            return db.FoodStyle.Include(x => x.Customer).Include(x => x. FoodStyleProduct);
+            return db.FoodStyle;
+        }
+
+        public IEnumerable<FoodStyle> GetWholeEntityList()
+        {
+            return db.FoodStyle.Include(x => x.Customer).Include(x => x.FoodStyleProduct);
         }
 
         public FoodStyle GetEntity(object id)
+        {
+            return db.FoodStyle.Find(id);
+        }
+
+        public FoodStyle GetWholeEntity(object id)
         {
             return db.FoodStyle.Include(x => x.Customer).Include(x => x.FoodStyleProduct)
                 .SingleOrDefault(x => x.Id == (int)id);

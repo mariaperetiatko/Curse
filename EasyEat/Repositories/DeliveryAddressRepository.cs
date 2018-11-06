@@ -16,14 +16,41 @@ namespace EasyEat.Repositories
             this.db = new EatContext();
         }
 
-        public IEnumerable<DeliveryAddress> GetEntityList()
+        public IEnumerable<DeliveryAddress> GetWholeEntityList()
         {
             return db.DeliveryAddress.Include(x => x.Customer).Include(x => x.Cart)
                 .Include(x => x.FoodOrder);
         }
-       
+
+        public IEnumerable<DeliveryAddress> GetEntityList()
+        {
+            return db.DeliveryAddress;
+        }
+
+        public Customer GetCustomer(string tokenId)
+        {
+            Customer customer = db.Customer.Where(x => x.IdentityId == tokenId).FirstOrDefault();
+            return customer;
+        }
+
+        public IEnumerable<DeliveryAddress> GetAddressByCustomer(int id)
+        {
+            IEnumerable<DeliveryAddress> addresses = db.DeliveryAddress
+                .Where(x => x.CustomerId == id);
+            //addresses.E
+            //foreach(Customer customer in addresses.Select(x => x.Customer))
+            //{
+            //    customer = 
+            //}
+            return addresses;
+        }
 
         public DeliveryAddress GetEntity(object id)
+        {
+            return db.DeliveryAddress.Find(id);
+        }
+
+        public DeliveryAddress GetWholeEntity(object id)
         {
             return db.DeliveryAddress.Include(x => x.Customer).Include(x => x.Cart)
                 .Include(x => x.FoodOrder).SingleOrDefault(x => x.Id == (int)id);

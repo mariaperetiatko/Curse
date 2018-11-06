@@ -15,19 +15,40 @@ namespace EasyEat.Controllers
     [Route("api/Cart")]
     public class CartController : Controller
     {
-        IRepository<Cart> db;
+        CartRepository db;
+        MainLogic ml;
+        CustomerRepository dbCustomer;
+
 
         public CartController()
         {
             db = new CartRepository();
+            ml = new MainLogic();
+            dbCustomer = new CustomerRepository();
+
         }
 
         // GET: api/<controller>
-        [Authorize(Roles = "Admin")]
-        [HttpGet]
+        [Authorize(Roles = "Admin, Member")]
+        [HttpGet("Get")]
         public IEnumerable<Cart> Get()
         {
             return db.GetEntityList();
+        }
+
+        [Authorize(Roles = "Member")]
+        [HttpGet("GetCart")]        
+        public IActionResult GetCart()
+        {
+            string userJWTId = User.FindFirst("id")?.Value;
+            Customer customer = db.GetCustomer(userJWTId);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            Cart cart = db.GetEntity(customer.Id);
+            cart.Customer = null;
+            return new ObjectResult(cart);
         }
 
         // GET api/<controller>/5
@@ -40,6 +61,8 @@ namespace EasyEat.Controllers
                 return NotFound();
             return new ObjectResult(cart);
         }
+
+        
 
         /*// POST api/<controller>
         [Authorize(Roles = "Admin, Member")]
@@ -60,11 +83,14 @@ namespace EasyEat.Controllers
         [HttpPut]
         public IActionResult Update([FromBody]Cart cart)
         {
+            string userId = User.Identity.Name;
             if (cart == null)
             {
                 return BadRequest();
             }
-            cart.TotalCaloricValue = MainLogic.GetTotalCaloricValue(cart);
+            cart = db.GetEntity(cart.CustomerId);
+            cart.TotalCaloricValue = ml.GetTotalCaloricValue(cart);
+            int allowedCaloricValue = ml.GetCaloricValue(cart.TotalCaloricValue, cart.MealTimeId);
             db.Update(cart);
             db.Save();
             return Ok(cart);

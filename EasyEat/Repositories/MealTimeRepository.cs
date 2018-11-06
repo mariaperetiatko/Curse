@@ -18,12 +18,22 @@ namespace EasyEat.Repositories
 
         public IEnumerable<MealTime> GetEntityList()
         {
+            return db.MealTime;
+        }
+
+        public IEnumerable<MealTime> GetWholeEntityList()
+        {
             return db.MealTime.Include(x => x.Cart);
+        }
+
+        public MealTime GetWholeEntity(object id)
+        {
+            return db.MealTime.Include(x => x.Cart).SingleOrDefault(x => x.Id == (int)id);
         }
 
         public MealTime GetEntity(object id)
         {
-            return db.MealTime.Include(x => x.Cart).SingleOrDefault(x => x.Id == (int)id);
+            return db.MealTime.Find(id);
         }
 
         public void Create(MealTime mealTime)

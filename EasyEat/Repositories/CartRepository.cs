@@ -18,20 +18,29 @@ namespace EasyEat.Repositories
 
         public IEnumerable<Cart> GetEntityList()
         {
-            return db.Cart.Include(x => x.Address).Include(x => x.Customer)
-                .Include(x => x.MealTime).Include(x => x.CartPart);
+            //return db.Cart.Include(x => x.Address).Include(x => x.Customer)
+            //    .Include(x => x.MealTime).Include(x => x.CartPart);
+            return db.Cart;
         }
 
         public Cart GetEntity(object id)
         {
-            return db.Cart.Include(x => x.Address).Include(x => x.Customer)
-                .Include(x => x.MealTime).Include(x => x.CartPart)
-                .SingleOrDefault(x => x.CustomerId == (int)id);
+            //return db.Cart.Include(x => x.Address).Include(x => x.Customer)
+            //    .Include(x => x.MealTime).Include(x => x.CartPart)
+            //    .SingleOrDefault(x => x.CustomerId == (int)id);
+            Cart cart = db.Cart.Where(x => x.CustomerId == (int)id).FirstOrDefault();
+            return cart;
         }
 
         public void Create(Cart cart)
         {
             db.Cart.Add(cart);
+        }
+
+        public Customer GetCustomer(string tokenId)
+        {
+            Customer customer = db.Customer.Where(x => x.IdentityId == tokenId).FirstOrDefault();
+            return customer;
         }
 
         public void Update(Cart cart)

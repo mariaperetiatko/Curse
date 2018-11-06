@@ -18,12 +18,26 @@ namespace EasyEat.Repositories
 
         public IEnumerable<Restaurant> GetEntityList()
         {
-            return db.Restaurant.Include(x => x.Menu);
+            return db.Restaurant.Where(x => x.IsDeleted == 0);
+        }
+
+        public IEnumerable<Restaurant> GetWholeEntityList()
+        {
+            return db.Restaurant.Where(x => x.IsDeleted == 0).Include(x => x.Menu);
         }
 
         public Restaurant GetEntity(object id)
         {
-            return db.Restaurant.Include(x => x.Menu).SingleOrDefault(x => x.Id == (int)id);
+            Restaurant restaurant = db.Restaurant.Find(id);
+            if (restaurant != null && restaurant.IsDeleted == 1)
+                return null;
+            return db.Restaurant.Find(id);
+        }
+
+        public Restaurant GetWholeEntity(object id)
+        {
+            return db.Restaurant.Where(x => x.IsDeleted == 0)
+                .Include(x => x.Menu).SingleOrDefault(x => x.Id == (int)id);
         }
 
         public void Create(Restaurant restaurant)
@@ -40,7 +54,10 @@ namespace EasyEat.Repositories
         {
             Restaurant restaurant = db.Restaurant.Find(id);
             if (restaurant != null)
-                db.Restaurant.Remove(restaurant);
+            {
+                restaurant.IsDeleted = 1;
+                db.Update(restaurant);
+            }
         }
 
         public void Save()

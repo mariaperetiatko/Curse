@@ -18,13 +18,33 @@ namespace EasyEat.Repositories
 
         public IEnumerable<FavouriteDish> GetEntityList()
         {
+            return db.FavouriteDish;
+        }
+
+        public IEnumerable<FavouriteDish> GetWholeEntityList()
+        {
             return db.FavouriteDish.Include(x => x.Customer).Include(x => x.Dish);
         }
 
         public FavouriteDish GetEntity(object id)
         {
-            return db.FavouriteDish.Include(x => x.Customer).Include(x => x.Dish)
-                .SingleOrDefault(x => new { x.CustomerId, x.DishId } == id);
+            FavouriteDishKey key = (FavouriteDishKey)id;
+            //return db.FavouriteDish.Include(x => x.Customer).Include(x => x.Dish)
+            //    .SingleOrDefault(x => new { x.CustomerId, x.DishId } == id);
+            return db.FavouriteDish.Find(key.CustomerId, key.DishId);
+        }
+        public Customer GetCustomer(string tokenId)
+        {
+            Customer customer = db.Customer.Where(x => x.IdentityId == tokenId).FirstOrDefault();
+            return customer;
+        }
+
+        public IEnumerable<FavouriteDish> GetFavouriteDishByCustomer(int id)
+        {
+            IEnumerable<FavouriteDish> favouriteDish = db.FavouriteDish
+                .Where(x => x.CustomerId == id);
+
+            return favouriteDish;
         }
 
         public void Create(FavouriteDish favouriteDish)
@@ -39,7 +59,8 @@ namespace EasyEat.Repositories
 
         public void Delete(object id)
         {
-            FavouriteDish favouriteDish = db.FavouriteDish.Find(id);
+            FavouriteDishKey key = (FavouriteDishKey)id;
+            FavouriteDish favouriteDish = db.FavouriteDish.Find(key.CustomerId, key.DishId);
             if (favouriteDish != null)
                 db.FavouriteDish.Remove(favouriteDish);
         }

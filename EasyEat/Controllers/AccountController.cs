@@ -44,10 +44,11 @@ namespace EasyEat.Controllers
 
             if (!result.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
 
-            await _userManager.AddToRoleAsync(userIdentity, model.Role);
+            result = await _userManager.AddToRoleAsync(userIdentity, model.Role);
 
-            if (model.Role == "Member")
+            if (model.Role == "member")
             {
+
                 Customer customer = new Customer
                 {
                     IdentityId = userIdentity.Id,
@@ -59,17 +60,41 @@ namespace EasyEat.Controllers
                 };
                 await _appDbContext.Customer.AddAsync(customer);
 
-                await _appDbContext.Cart.AddAsync(new Cart
+                //Customer cust = _appDbContext.Customer.Where(x => x.IdentityId == customer.IdentityId)
+                //    .SingleOrDefault();
+                await _appDbContext.SaveChangesAsync();
+
+
+                _appDbContext.Cart.Add( new Cart
                 {
                     CustomerId = customer.Id,
-                    Customer = customer,
-                    TotalCaloricValue = 0,            
+                    TotalCaloricValue = 0,
                     AddressId = 0,
                     MealTimeId = 0,
                     DeliveryDate = DateTime.Now
+                });
 
-            });
-            }        
+                //var e = await _appDbContext.Cart.AddAsync(cart);
+                try
+                {
+                    var x = await _appDbContext.SaveChangesAsync();
+                } catch(Exception e)
+                {
+                    return new ObjectResult(e.Message);
+                }
+
+
+                //await _appDbContext.Cart.AddAsync(new Cart
+                //{
+                //    CustomerId = customer.Id,
+                //    Customer = customer,
+                //    TotalCaloricValue = 0,
+                //    AddressId = 0,
+                //    MealTimeId = 0,
+                //    DeliveryDate = DateTime.Now
+
+                //});
+            }
             await _appDbContext.SaveChangesAsync();
 
             return new OkObjectResult("Account created");

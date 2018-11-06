@@ -18,13 +18,34 @@ namespace EasyEat.Repositories
 
         public IEnumerable<SpecialProduct> GetEntityList()
         {
+            return db.SpecialProduct;
+        }
+
+        public IEnumerable<SpecialProduct> GetWholeEntityList()
+        {
             return db.SpecialProduct.Include(x => x.Product).Include(x => x.Customer);
+        }
+
+        public Customer GetCustomer(string tokenId)
+        {
+            Customer customer = db.Customer.Where(x => x.IdentityId == tokenId).FirstOrDefault();
+            return customer;
+        }
+
+        public IEnumerable<SpecialProduct> GetSpecialProductByCustomer(int id)
+        {
+            IEnumerable<SpecialProduct> specialProducts = db.SpecialProduct
+                .Where(x => x.CustomerId == id);
+           
+            return specialProducts;
         }
 
         public SpecialProduct GetEntity(object id)
         {
-            return db.SpecialProduct.Include(x => x.Product).Include(x => x.Customer)
-                .SingleOrDefault(x => new { x.ProductId, x.CustomerId } == id);
+            SpecialProductKey key = (SpecialProductKey)id;
+            //return db.SpecialProduct.Include(x => x.Product).Include(x => x.Customer)
+            //    .SingleOrDefault(x => new { x.ProductId, x.CustomerId } == id);
+            return db.SpecialProduct.Find(key.ProductId, key.CustomerId);
         }
 
         public void Create(SpecialProduct specialProduct)
@@ -39,7 +60,9 @@ namespace EasyEat.Repositories
 
         public void Delete(object id)
         {
-            SpecialProduct specialProduct = db.SpecialProduct.Find(id);
+            SpecialProductKey key = (SpecialProductKey)id;
+            SpecialProduct specialProduct = db.SpecialProduct
+                .Find(key.ProductId, key.CustomerId);
             if (specialProduct != null)
                 db.SpecialProduct.Remove(specialProduct);
         }

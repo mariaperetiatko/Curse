@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using EasyEat.Models;
 using EasyEat.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using EasyEat.BusinessLogic;
 
 namespace EasyEat.Controllers
 {
@@ -15,14 +16,16 @@ namespace EasyEat.Controllers
     public class CartPartController : Controller
     {
         IRepository<CartPart> db;
+        MainLogic ml;
 
         public CartPartController()
         {
             db = new CartPartRepository();
+            ml = new MainLogic();
         }
 
         // GET: api/<controller>
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Member")]
         [HttpGet]
         public IEnumerable<CartPart> Get()
         {
@@ -32,7 +35,8 @@ namespace EasyEat.Controllers
         // GET api/<controller>/5
         [Authorize(Roles = "Admin, Member")]
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        [ActionName("Get")]
+        public IActionResult Get([FromQuery]CartPartKey id)
         {
             CartPart cartPart = db.GetEntity(id);
             if (cartPart == null)
@@ -50,6 +54,22 @@ namespace EasyEat.Controllers
                 return BadRequest();
             }
             db.Create(cartPart);
+            db.Save();
+            return Ok(cartPart);
+        }
+
+        // DELETE api/<controller>/5
+        [Authorize(Roles = "Admin, Member")]
+        [HttpDelete("{id}")]
+        [ActionName("Delete")]
+        public IActionResult Delete([FromQuery]CartPartKey id)
+        {
+            CartPart cartPart = db.GetEntity(id);
+            if (cartPart == null)
+            {
+                return NotFound();
+            }
+            db.Delete(id);
             db.Save();
             return Ok(cartPart);
         }

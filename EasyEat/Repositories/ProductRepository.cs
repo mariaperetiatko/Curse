@@ -18,14 +18,24 @@ namespace EasyEat.Repositories
 
         public IEnumerable<Product> GetEntityList()
         {
+            return db.Product;
+        }
+
+        public IEnumerable<Product> GetWholeEntityList()
+        {
             return db.Product.Include(x => x.FoodStyleProduct).Include(x => x.Ingredient)
                 .Include(x => x.SpecialProduct);
         }
 
-        public Product GetEntity(object id)
+        public Product GetWholeEntity(object id)
         {
             return db.Product.Include(x => x.FoodStyleProduct).Include(x => x.Ingredient)
                 .Include(x => x.SpecialProduct).SingleOrDefault(x => x.Id == (int)id);
+        }
+
+        public Product GetEntity(object id)
+        {
+            return db.Product.Find(id);
         }
 
         public void Create(Product product)
@@ -41,6 +51,7 @@ namespace EasyEat.Repositories
         public void Delete(object id)
         {
             Product product = db.Product.Find(id);
+           
             if (product != null)
                 db.Product.Remove(product);
         }

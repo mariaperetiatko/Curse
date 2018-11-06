@@ -23,8 +23,16 @@ namespace EasyEat.Repositories
        
         public CartPart GetEntity(object id)
         {
-            return db.CartPart.Include(x => x.Cart).Include(x => x.Menu)
-                .SingleOrDefault(x => new { x.MenuId, x.CartId } == id);
+            CartPartKey key = (CartPartKey)id;
+            //return db.CartPart.Include(x => x.Cart).Include(x => x.Menu)
+            //    .SingleOrDefault(x => new { x.MenuId, x.CartId } == id);
+            return db.CartPart.Find(key.MenuId, key.CartId);
+        }
+
+        public int GetCustomerId(string tokenId)
+        {
+            Customer customer = db.Customer.Where(x => x.IdentityId == tokenId).FirstOrDefault();
+            return customer.Id;
         }
 
         public void Create(CartPart cartPart)
@@ -39,7 +47,8 @@ namespace EasyEat.Repositories
 
         public void Delete(object id)
         {
-            CartPart cartPart = db.CartPart.Find(id);
+            CartPartKey key = (CartPartKey)id;
+            CartPart cartPart = db.CartPart.Find(key.MenuId, key.CartId);
             if (cartPart != null)
                 db.CartPart.Remove(cartPart);
         }

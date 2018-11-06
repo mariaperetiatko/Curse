@@ -18,11 +18,14 @@ namespace EasyEat.Controllers
     public class FoodOrderController : Controller
     {
         IRepository<FoodOrder> dbFoodOrder;
+        IRepository<Customer> dbCustomer;
 
 
         public FoodOrderController()
         {
             dbFoodOrder = new FoodOrderRepository();
+            dbCustomer = new CustomerRepository();
+
         }
 
         // GET: api/<controller>
@@ -51,6 +54,7 @@ namespace EasyEat.Controllers
             {
                 return BadRequest();
             }
+            foodOrder.Customer = dbCustomer.GetEntity(foodOrder.CustomerId);
             foodOrder.TotalCost = MainLogic.GetTotalCost(foodOrder);
             dbFoodOrder.Create(foodOrder);
             dbFoodOrder.Save();

@@ -18,18 +18,23 @@ namespace EasyEat.Repositories
 
         public IEnumerable<Ingredient> GetEntityList()
         {
-            return db.Ingredient.Include(x => x.Dish).Include(x => x.Product);
+            return db.Ingredient;
         }
 
         public Ingredient GetEntity(object id)
         {
-            return db.Ingredient.Include(x => x.Dish).Include(x => x.Product)
-                .SingleOrDefault(x => new { x.DishId, x.ProductId } == id);
+            IngredientKey key = (IngredientKey)id;
+            return db.Ingredient
+                .Find(key.DishId, key.ProductId);
+
         }
 
         public void Create(Ingredient ingredient)
         {
-            db.Ingredient.Add(ingredient);
+            Ingredient prbableIngredient = db.Ingredient
+                .Find(ingredient.DishId, ingredient.ProductId);
+            if(prbableIngredient == null)
+                db.Ingredient.Add(ingredient);
         }
 
         public void Update(Ingredient ingredient)
@@ -39,7 +44,8 @@ namespace EasyEat.Repositories
 
         public void Delete(object id)
         {
-            Ingredient ingredient = db.Ingredient.Find(id);
+            IngredientKey key = (IngredientKey)id;
+            Ingredient ingredient = db.Ingredient.Find(key.DishId, key.ProductId);
             if (ingredient != null)
                 db.Ingredient.Remove(ingredient);
         }

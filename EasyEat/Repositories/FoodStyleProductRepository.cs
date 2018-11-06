@@ -18,18 +18,37 @@ namespace EasyEat.Repositories
 
         public IEnumerable<FoodStyleProduct> GetEntityList()
         {
+            return db.FoodStyleProduct;
+        }
+
+        public IEnumerable<FoodStyleProduct> GetWholeEntityList()
+        {
             return db.FoodStyleProduct.Include(x => x.FoodStyle).Include(x => x.Product);
         }
 
         public FoodStyleProduct GetEntity(object id)
         {
+            FoodStyleProductKey key = (FoodStyleProductKey)id;
+            //return db.FoodStyleProduct.Include(x => x.FoodStyle).Include(x => x.Product)
+            //    .SingleOrDefault(x => new { x.FoodStyleId, x.ProductId } == id);
+            return db.FoodStyleProduct.Find(key.FoodStyleId, key.ProductId);
+        }
+
+        public FoodStyleProduct GetWholeEntity(object id)
+        {
+            FoodStyleProductKey key = (FoodStyleProductKey)id;
+       
             return db.FoodStyleProduct.Include(x => x.FoodStyle).Include(x => x.Product)
-                .SingleOrDefault(x => new { x.FoodStyleId, x.ProductId } == id);
+                  .SingleOrDefault(x => x.FoodStyleId == key.FoodStyleId
+                  & x.ProductId == key.ProductId);
         }
 
         public void Create(FoodStyleProduct foodStyleProduct)
         {
-            db.FoodStyleProduct.Add(foodStyleProduct);
+            FoodStyleProduct prbableFoodStyleProduct = db.FoodStyleProduct
+                .Find(foodStyleProduct.FoodStyleId, foodStyleProduct.ProductId);
+            if (prbableFoodStyleProduct == null)
+                db.FoodStyleProduct.Add(foodStyleProduct);
         }
 
         public void Update(FoodStyleProduct foodStyleProduct)
@@ -39,7 +58,9 @@ namespace EasyEat.Repositories
 
         public void Delete(object id)
         {
-            FoodStyleProduct foodStyleProduct = db.FoodStyleProduct.Find(id);
+            FoodStyleProductKey key = (FoodStyleProductKey)id;
+            FoodStyleProduct foodStyleProduct = db.FoodStyleProduct
+                .Find(key.FoodStyleId, key.ProductId);
             if (foodStyleProduct != null)
                 db.FoodStyleProduct.Remove(foodStyleProduct);
         }

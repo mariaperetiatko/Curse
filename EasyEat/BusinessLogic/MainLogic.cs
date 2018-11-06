@@ -7,9 +7,15 @@ using EasyEat.Repositories;
 
 namespace EasyEat.BusinessLogic
 {
-    public static class MainLogic
+    public class MainLogic
     {
-        public static int GetCaloricValue(int totalCaloricValue, int mealNumber)
+        IRepository<CartPart> db;
+
+        public MainLogic()
+        {
+            db = new CartPartRepository();
+        }
+        public int GetCaloricValue(int totalCaloricValue, int mealNumber)
         {
             switch(mealNumber)
             {
@@ -27,6 +33,7 @@ namespace EasyEat.BusinessLogic
 
         public static int GetTotalCost(FoodOrder foodOrder)
         {
+            
             Customer customer = foodOrder.Customer;
             Cart cart = customer.Cart;
             List<CartPart> cartPart = cart.CartPart.ToList();
@@ -34,9 +41,13 @@ namespace EasyEat.BusinessLogic
             return totalCost ;
         }
 
-        public static int GetTotalCaloricValue(Cart cart)
+        public int GetTotalCaloricValue(Cart cart)
         {
-            IEnumerable<CartPart> cartParts = cart.CartPart;
+            List<CartPart> cartParts = cart.CartPart.ToList();
+            for(int i = 0; i < cartParts.Count(); i++)
+            {
+                cartParts[i] = db.GetEntity(new { cartParts[i].MenuId, cartParts[i].CartId });
+            }
             List<Menu> menues = cartParts.Select(x => x.Menu).ToList();
             List<Dish> dishes = menues.Select(x => x.Dish).ToList();
             int totalCaloricValue = dishes.Select(x => x.Ingredient.Select(y => y.Product.CaloricValue).Sum()).Sum();
