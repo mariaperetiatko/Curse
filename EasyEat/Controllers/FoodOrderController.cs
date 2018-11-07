@@ -13,18 +13,21 @@ using EasyEat.BusinessLogic;
 
 namespace EasyEat.Controllers
 {
+    [Authorize]
     [Produces("application/json")]
     [Route("api/FoodOrder")]
     public class FoodOrderController : Controller
     {
-        IRepository<FoodOrder> dbFoodOrder;
+        FoodOrderRepository dbFoodOrder;
         IRepository<Customer> dbCustomer;
+        MainLogic ml;
 
 
         public FoodOrderController()
         {
             dbFoodOrder = new FoodOrderRepository();
             dbCustomer = new CustomerRepository();
+            ml = new MainLogic();
 
         }
 
@@ -32,7 +35,17 @@ namespace EasyEat.Controllers
         [HttpGet]
         public IEnumerable<FoodOrder> Get()
         {
-            return dbFoodOrder.GetEntityList();
+            string userJWTId = User.FindFirst("id")?.Value;
+            Customer customer = dbFoodOrder.GetCustomer(userJWTId);
+            if (customer == null)
+            {
+                return dbFoodOrder.GetEntityList();
+            }
+            List<FoodOrder> foodOrder = dbFoodOrder
+                .GetFoodOrderByCustomer(customer.Id).ToList();
+            for (int i = 0; i < foodOrder.Count(); i++)
+                foodOrder[i].Customer = null;
+            return foodOrder.AsEnumerable();
         }
 
         // GET api/<controller>/5
@@ -54,10 +67,20 @@ namespace EasyEat.Controllers
             {
                 return BadRequest();
             }
-            foodOrder.Customer = dbCustomer.GetEntity(foodOrder.CustomerId);
-            foodOrder.TotalCost = MainLogic.GetTotalCost(foodOrder);
+            string userJWTId = User.FindFirst("id")?.Value;
+            Customer customer = dbFoodOrder.GetCustomer(userJWTId);
+            if (customer != null)
+            {
+                foodOrder.CustomerId = customer.Id;
+            }
+            //foodOrder.Customer = dbCustomer.GetEntity(foodOrder.CustomerId);
+            Cart cart = dbFoodOrder.GetCart(foodOrder);
+            foodOrder.Address = cart.Address;
+            foodOrder.DeliveryDate = cart.DeliveryDate;
+            foodOrder.TotalCost = ml.GetTotalCost(foodOrder);
             dbFoodOrder.Create(foodOrder);
             dbFoodOrder.Save();
+            foodOrder.Customer = null;
             return Ok(foodOrder);
         }
 
@@ -70,7 +93,13 @@ namespace EasyEat.Controllers
             {
                 return BadRequest();
             }
-            foodOrder.TotalCost = MainLogic.GetTotalCost(foodOrder);
+            string userJWTId = User.FindFirst("id")?.Value;
+            Customer customer = dbFoodOrder.GetCustomer(userJWTId);
+            if (customer != null)
+            {
+                foodOrder.CustomerId = customer.Id;
+            }
+            foodOrder.TotalCost = ml.GetTotalCost(foodOrder);
             dbFoodOrder.Update(foodOrder);
             dbFoodOrder.Save();
             return Ok(foodOrder);

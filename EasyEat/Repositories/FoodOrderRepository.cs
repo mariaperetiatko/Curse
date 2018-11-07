@@ -44,6 +44,24 @@ namespace EasyEat.Repositories
                 db.FoodOrder.Remove(foodOrder);
         }
 
+        public Customer GetCustomer(string tokenId)
+        {
+            Customer customer = db.Customer.Where(x => x.IdentityId == tokenId).FirstOrDefault();
+            return customer;
+        }
+
+        public IEnumerable<FoodOrder> GetFoodOrderByCustomer(int id)
+        {
+            IEnumerable<FoodOrder> foodOrder = db.FoodOrder
+                .Where(x => x.CustomerId == id);
+
+            return foodOrder;
+        }
+
+        public Cart GetCart(FoodOrder foodOrder)
+        {
+            return db.Cart.FirstOrDefault(x => x.CustomerId == foodOrder.CustomerId);
+        }
         public void Save()
         {
             db.SaveChanges();

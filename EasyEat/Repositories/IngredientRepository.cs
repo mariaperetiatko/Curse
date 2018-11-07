@@ -26,6 +26,13 @@ namespace EasyEat.Repositories
             IngredientKey key = (IngredientKey)id;
             return db.Ingredient
                 .Find(key.DishId, key.ProductId);
+        }
+
+        public Ingredient GetWholeEntity(object id)
+        {
+            IngredientKey key = (IngredientKey)id;
+            return db.Ingredient.Include(x => x.Product)
+                .SingleOrDefault(x => x.ProductId == key.ProductId & x.DishId == key.DishId); ;
 
         }
 

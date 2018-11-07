@@ -83,10 +83,15 @@ namespace EasyEat.Controllers
         [HttpPut]
         public IActionResult Update([FromBody]Cart cart)
         {
-            string userId = User.Identity.Name;
             if (cart == null)
             {
                 return BadRequest();
+            }
+            string userJWTId = User.FindFirst("id")?.Value;
+            Customer customer = db.GetCustomer(userJWTId);
+            if (customer != null)
+            {
+                cart.CustomerId = customer.Id;
             }
             cart = db.GetEntity(cart.CustomerId);
             cart.TotalCaloricValue = ml.GetTotalCaloricValue(cart);
@@ -101,6 +106,12 @@ namespace EasyEat.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
+            string userJWTId = User.FindFirst("id")?.Value;
+            Customer customer = db.GetCustomer(userJWTId);
+            if (customer != null)
+            {
+                id = customer.Id;
+            }
             Cart cart = db.GetEntity(id);
             if (cart == null)
             {

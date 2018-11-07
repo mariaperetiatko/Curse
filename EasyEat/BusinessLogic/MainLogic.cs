@@ -9,11 +9,24 @@ namespace EasyEat.BusinessLogic
 {
     public class MainLogic
     {
-        IRepository<CartPart> db;
+        CartPartRepository db;
+        CustomerRepository cr;
+        MenuRepository mr;
+        DishRepository dr;
+        IngredientRepository ir;
+        ProductRepository pr;
+
+
+
 
         public MainLogic()
         {
             db = new CartPartRepository();
+            cr = new CustomerRepository();
+            mr = new MenuRepository();
+            dr = new DishRepository();
+            ir = new IngredientRepository();
+            pr = new ProductRepository();
         }
         public int GetCaloricValue(int totalCaloricValue, int mealNumber)
         {
@@ -31,28 +44,43 @@ namespace EasyEat.BusinessLogic
         }
 
 
-        public static int GetTotalCost(FoodOrder foodOrder)
+        public int GetTotalCost(FoodOrder foodOrder)
         {
-            
-            Customer customer = foodOrder.Customer;
-            Cart cart = customer.Cart;
-            List<CartPart> cartPart = cart.CartPart.ToList();
+
+            Customer customer = cr.GetWholeEntity(foodOrder.CustomerId);
+            List<CartPart> cartPart = db.GetWholeEntityByCustomerList(customer).ToList();
             int totalCost = cartPart.Select(x => x.Menu.Cost * x.DishCount).Sum();
-            return totalCost ;
+            return totalCost;
         }
 
         public int GetTotalCaloricValue(Cart cart)
         {
-            List<CartPart> cartParts = cart.CartPart.ToList();
-            for(int i = 0; i < cartParts.Count(); i++)
-            {
-                cartParts[i] = db.GetEntity(new { cartParts[i].MenuId, cartParts[i].CartId });
-            }
+            Customer customer = cr.GetWholeEntity(cart.CustomerId);
+            List<CartPart> cartParts = db.GetWholeEntityByCustomerList(customer).ToList();
+
             List<Menu> menues = cartParts.Select(x => x.Menu).ToList();
+            for(int i = 0; i < menues.Count(); i++)
+                menues[i] = mr.GetWholeEntity(menues[i].Id);
+
+            int totalCaloric = 0;
             List<Dish> dishes = menues.Select(x => x.Dish).ToList();
-            int totalCaloricValue = dishes.Select(x => x.Ingredient.Select(y => y.Product.CaloricValue).Sum()).Sum();
+            for (int i = 0; i < dishes.Count(); i++)
+            {
+                dishes[i] = dr.GetWholeEntity(dishes[i].Id);
+                
+                List<Ingredient> ingredients = dishes[i].Ingredient.ToList();                
+                for(int j = 0; j < ingredients.Count(); j++)
+                {
+                    Product product = pr.GetEntity(ingredients[j].ProductId);
+                    totalCaloric += product.CaloricValue;
+                }
+            }
+
+            //for ()
+
+            //int totalCaloricValue = dishes.Select(x => x.Ingredient.Select(y => y.Product.CaloricValue).Sum()).Sum();
             
-            return totalCaloricValue;
+            return totalCaloric;
         }
 
 

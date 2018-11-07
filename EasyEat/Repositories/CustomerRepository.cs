@@ -33,6 +33,15 @@ namespace EasyEat.Repositories
             return db.Customer.SingleOrDefault(x => x.Id == (int)id);
         }
 
+        public Customer GetWholeEntity(object id)
+        {
+            return db.Customer.Include(x => x.FoodStyle).Include(x => x.Cart)
+                .Include(x => x.DeliveryAddress).Include(x => x.FavouriteDish)
+                .Include(x => x.FoodOrder).Include(x => x.SpecialProduct)
+                .SingleOrDefault(x => x.Id == (int)id);
+
+        }
+
         public void Create(Customer customer)
         {
             db.Customer.Add(customer);

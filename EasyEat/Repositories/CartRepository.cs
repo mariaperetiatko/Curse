@@ -23,6 +23,13 @@ namespace EasyEat.Repositories
             return db.Cart;
         }
 
+        public IEnumerable<Cart> GetWholeEntityList()
+        {
+            return db.Cart.Include(x => x.Address).Include(x => x.Customer)
+                .Include(x => x.MealTime).Include(x => x.CartPart);
+
+        }
+
         public Cart GetEntity(object id)
         {
             //return db.Cart.Include(x => x.Address).Include(x => x.Customer)
@@ -30,6 +37,14 @@ namespace EasyEat.Repositories
             //    .SingleOrDefault(x => x.CustomerId == (int)id);
             Cart cart = db.Cart.Where(x => x.CustomerId == (int)id).FirstOrDefault();
             return cart;
+        }
+
+        public Cart GetWholeEntity(object id)
+        {
+            return db.Cart.Include(x => x.Address).Include(x => x.Customer)
+                .Include(x => x.MealTime).Include(x => x.CartPart)
+                .SingleOrDefault(x => x.CustomerId == (int)id);
+
         }
 
         public void Create(Cart cart)

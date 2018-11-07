@@ -18,9 +18,20 @@ namespace EasyEat.Repositories
 
         public IEnumerable<CartPart> GetEntityList()
         {
+            return db.CartPart;
+        }
+
+        public IEnumerable<CartPart> GetWholeEntityList()
+        {
             return db.CartPart.Include(x => x.Cart).Include(x => x.Menu);
         }
-       
+
+        public IEnumerable<CartPart> GetWholeEntityByCustomerList(Customer customer)
+        {
+            return db.CartPart.Include(x => x.Cart).Include(x => x.Menu)
+                .Where(x => x.CartId == customer.Id);
+        }
+
         public CartPart GetEntity(object id)
         {
             CartPartKey key = (CartPartKey)id;
@@ -29,10 +40,25 @@ namespace EasyEat.Repositories
             return db.CartPart.Find(key.MenuId, key.CartId);
         }
 
-        public int GetCustomerId(string tokenId)
+        public CartPart GetWholeEntity(object id)
+        {
+            CartPartKey key = (CartPartKey)id;
+            return db.CartPart.Include(x => x.Cart).Include(x => x.Menu)
+                .SingleOrDefault(x => x.MenuId == key.MenuId & x.CartId == key.CartId);
+        }
+
+        public Customer GetCustomer(string tokenId)
         {
             Customer customer = db.Customer.Where(x => x.IdentityId == tokenId).FirstOrDefault();
-            return customer.Id;
+            return customer;
+        }
+
+        public IEnumerable<CartPart> GetCartPartByCustomer(int id)
+        {
+            IEnumerable<CartPart> cartPart = db.CartPart
+                .Where(x => x.CartId == id);
+
+            return cartPart;
         }
 
         public void Create(CartPart cartPart)
