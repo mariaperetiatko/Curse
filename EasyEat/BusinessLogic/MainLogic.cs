@@ -15,6 +15,7 @@ namespace EasyEat.BusinessLogic
         DishRepository dr;
         IngredientRepository ir;
         ProductRepository pr;
+        RestaurantRepository rr;
 
 
 
@@ -27,6 +28,7 @@ namespace EasyEat.BusinessLogic
             dr = new DishRepository();
             ir = new IngredientRepository();
             pr = new ProductRepository();
+            rr = new RestaurantRepository();
         }
         public int GetCaloricValue(int totalCaloricValue, int mealNumber)
         {
@@ -72,13 +74,9 @@ namespace EasyEat.BusinessLogic
                 for(int j = 0; j < ingredients.Count(); j++)
                 {
                     Product product = pr.GetEntity(ingredients[j].ProductId);
-                    totalCaloric += product.CaloricValue;
+                    totalCaloric += product.CaloricValue * ingredients[j].ProductWeight / 100;
                 }
             }
-
-            //for ()
-
-            //int totalCaloricValue = dishes.Select(x => x.Ingredient.Select(y => y.Product.CaloricValue).Sum()).Sum();
             
             return totalCaloric;
         }
@@ -106,22 +104,34 @@ namespace EasyEat.BusinessLogic
         }
 
 
-        public static List<int> FindAppropriateRestaurants(Customer customer, List<Restaurant> restaurantsInRadius, 
+        public List<int> FindAppropriateRestaurants(Customer customer, List<Restaurant> restaurantsInRadius, 
             List<Product> products)
         {
             List<int> resultingRestaurants = new List<int>();
+            customer = cr.GetWholeEntity(customer.Id);
+
+            for (int i = 0; i < restaurantsInRadius.Count(); i++)
+            {
+                restaurantsInRadius[i] = rr.GetWholeEntity(restaurantsInRadius[i].Id);
+            }
+
             List<int> allowedProductIds = customer.SpecialProduct.Where(x => x.Allowance == 1)
                 .Select(x => x.ProductId).ToList();
+            
             List<Product> allowedProducts = products.Where(x => allowedProductIds.Contains(x.Id))
                 .ToList();
 
-            foreach (Restaurant restaurant in restaurantsInRadius)
+            for (int i = 0; i < restaurantsInRadius.Count(); i++)
             {
-                foreach (Menu menu in restaurant.Menu)
+                List<Menu> menues = restaurantsInRadius[i].Menu.ToList();
+                for (int j = 0; j < menues.Count(); j++)
                 {
+                    menues[j] = mr.GetWholeEntity(menues[j].Id);
+                    menues[j].Dish = dr.GetWholeEntity(menues[j].DishId);
+                    List<Ingredient> ingredients = menues[j].Dish.Ingredient.ToList();
                     bool isAppropriate = true;
 
-                    foreach (Ingredient ingredient in menu.Dish.Ingredient)
+                    foreach (Ingredient ingredient in ingredients)
                     {
                         if (!allowedProducts.Contains(ingredient.Product))
                         {
@@ -131,7 +141,7 @@ namespace EasyEat.BusinessLogic
                     }
                     if (isAppropriate)
                     {
-                        resultingRestaurants.Add(restaurant.Id);
+                        resultingRestaurants.Add(restaurantsInRadius[i].Id);
                         break;
                     }
                 }
@@ -140,9 +150,15 @@ namespace EasyEat.BusinessLogic
         }
 
 
-        public static List<int> FindByFavourites(Customer customer, List<Restaurant> restaurantsInRadius)
+        public List<int> FindByFavourites(Customer customer, List<Restaurant> restaurantsInRadius)
         {
             List<int> resultingRestaurants = new List<int>();
+            customer = cr.GetWholeEntity(customer.Id);
+
+            for(int i = 0; i < restaurantsInRadius.Count(); i++)
+            {
+                restaurantsInRadius[i] = rr.GetWholeEntity(restaurantsInRadius[i].Id);
+            }
             List<int> favouriteDishesId = customer.FavouriteDish.Select(x => x.DishId).ToList();
 
             foreach (Restaurant restaurant in restaurantsInRadius)
@@ -162,7 +178,7 @@ namespace EasyEat.BusinessLogic
                 if (isAppropriate)
                 {
                     resultingRestaurants.Add(restaurant.Id);
-                    break;
+                    //break;
                 }
             }
             return resultingRestaurants;

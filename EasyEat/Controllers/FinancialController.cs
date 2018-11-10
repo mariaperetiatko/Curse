@@ -16,7 +16,7 @@ namespace EasyEat.Controllers
     [Route("api/Financial")]
     public class FinancialController : Controller
     {
-        IRepository<FoodOrder> dbFoodOrder;
+        FoodOrderRepository dbFoodOrder;
         IRepository<Customer> dbCustomer;
 
 
@@ -26,17 +26,18 @@ namespace EasyEat.Controllers
             dbCustomer = new CustomerRepository();
         }
 
-        [HttpGet("{orderId}")]
         [Route("Pay")]
+        [HttpGet("{orderId}")]
         public IActionResult Pay(int orderId)
         {
-            FoodOrder foodOrder = dbFoodOrder.GetEntity(orderId);
+            FoodOrder foodOrder = dbFoodOrder.GetWholeEntity(orderId);
             if (foodOrder.TotalCost > foodOrder.Customer.Balance)
             {
                 return new ObjectResult("You can not pay, your balance is less that total cost!");
             }
             int newBalance = MainLogic.RefreshBalance((int)foodOrder.Customer.Balance, -foodOrder.TotalCost);
             Customer customer = foodOrder.Customer;
+            
             customer.Balance = newBalance;
             dbCustomer.Update(customer);
             dbCustomer.Save();
@@ -53,7 +54,7 @@ namespace EasyEat.Controllers
                 return new ObjectResult("MoneySum must be positive!");
 
             Customer customer = dbCustomer.GetEntity(customerId);
-            int newBalance = MainLogic.RefreshBalance((int)customer.Balance, -moneySum);
+            int newBalance = MainLogic.RefreshBalance((int)customer.Balance, moneySum);
             customer.Balance = newBalance;
             dbCustomer.Update(customer);
             dbCustomer.Save();

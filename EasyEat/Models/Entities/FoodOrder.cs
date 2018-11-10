@@ -5,6 +5,11 @@ namespace EasyEat.Models
 {
     public partial class FoodOrder
     {
+        public FoodOrder()
+        {
+            BoxMigration = new HashSet<BoxMigration>();
+        }
+
         public int Id { get; set; }
         public int CustomerId { get; set; }
         public int TotalCost { get; set; }
@@ -13,5 +18,7 @@ namespace EasyEat.Models
 
         public virtual DeliveryAddress Address { get; set; }
         public virtual Customer Customer { get; set; }
+        public virtual ICollection<BoxMigration> BoxMigration { get; set; }
+
     }
 }

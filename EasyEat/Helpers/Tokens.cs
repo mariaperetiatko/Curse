@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using EasyEat.Auth;
 using EasyEat.Models;
 using Newtonsoft.Json;
+
 namespace EasyEat.Helpers
 {
     public class Tokens
@@ -19,5 +20,9 @@ namespace EasyEat.Helpers
 
             return JsonConvert.SerializeObject(response, serializerSettings);
         }
+
+        
     }
+
+
 }

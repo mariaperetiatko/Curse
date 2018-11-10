@@ -55,7 +55,8 @@ namespace EasyEat.Controllers
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     Phone = model.Phone,
-                    IsDeleted = 0
+                    IsDeleted = 0,
+                    Balance = 0
 
                 };
                 await _appDbContext.Customer.AddAsync(customer);

@@ -33,6 +33,7 @@ namespace EasyEat.Models
         public virtual DbSet<Restaurant> Restaurant { get; set; }
         public virtual DbSet<SpecialProduct> SpecialProduct { get; set; }
         public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<BoxMigration> BoxMigration { get; set; }
         public DbSet<Culture> Cultures { get; set; }
         public DbSet<Resource> Resources { get; set; }
 
@@ -52,6 +53,23 @@ namespace EasyEat.Models
 
 
             modelBuilder.HasAnnotation("ProductVersion", "2.2.0-preview3-35497");
+
+            modelBuilder.Entity<BoxMigration>(entity =>
+            {
+                entity.Property(e => e.Latitude).IsRequired();
+
+                entity.Property(e => e.Longtitude).IsRequired();
+
+                entity.Property(e => e.FoodOrderId);
+
+                entity.Property(e => e.Moment).IsRequired();
+
+                entity.HasOne(d => d.FoodOrder)
+                    .WithMany(p => p.BoxMigration)
+                    .HasForeignKey(d => d.FoodOrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_BoxMigration_FoodOrderID");
+            });
 
             modelBuilder.Entity<Cart>(entity =>
             {
@@ -167,7 +185,6 @@ namespace EasyEat.Models
 
             modelBuilder.Entity<FoodOrder>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.AddressId).HasColumnName("AddressID");
 

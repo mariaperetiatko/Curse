@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using EasyEat.Models;
 using EasyEat.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Localization;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
+
+
 
 
 namespace EasyEat.Controllers
@@ -17,10 +22,13 @@ namespace EasyEat.Controllers
     public class RestaurantController : Controller
     {
         IRepository<Restaurant> db;
+        private IStringLocalizer _localizer;
 
-        public RestaurantController()
+
+        public RestaurantController(IStringLocalizer localizer)
         {
             db = new RestaurantRepository();
+            _localizer = localizer;
         }
 
         // GET: api/<controller>
@@ -28,7 +36,14 @@ namespace EasyEat.Controllers
         [HttpGet]
         public IEnumerable<Restaurant> Get()
         {
-            return db.GetEntityList();
+            List<Restaurant> restaurants = db.GetEntityList().ToList();
+            foreach(Restaurant restaurant in restaurants)
+            {
+                restaurant.City = _localizer[restaurant.City];
+                restaurant.Country = _localizer[restaurant.Country];
+                restaurant.Streete = _localizer[restaurant.Streete];
+            }
+            return restaurants.AsEnumerable();
         }
 
         // GET api/<controller>/5
@@ -38,6 +53,9 @@ namespace EasyEat.Controllers
             Restaurant restaurant = db.GetEntity(id);
             if (restaurant == null)
                 return NotFound();
+            restaurant.City = _localizer[restaurant.City];
+            restaurant.Country = _localizer[restaurant.Country];
+            restaurant.Streete = _localizer[restaurant.Streete];
             return new ObjectResult(restaurant);
         }
 
@@ -50,6 +68,11 @@ namespace EasyEat.Controllers
             {
                 return BadRequest();
             }
+            this._localizer.WithCulture(new CultureInfo("en"));
+            restaurant.Streete = _localizer[restaurant.Streete];
+            restaurant.City = _localizer[restaurant.City];
+            restaurant.Country = _localizer[restaurant.Country];
+
             db.Create(restaurant);
             db.Save();
             return Ok(restaurant);

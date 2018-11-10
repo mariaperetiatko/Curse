@@ -30,7 +30,7 @@ namespace EasyEat.Controllers
             _localizer = localizer;
 
         }
-
+        [HttpGet]
         public string  Test()
         {
             string message = _localizer["Message"];

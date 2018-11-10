@@ -93,11 +93,25 @@ namespace EasyEat.Controllers
             {
                 cart.CustomerId = customer.Id;
             }
-            cart = db.GetEntity(cart.CustomerId);
+
+            Customer appropriateCustomer = dbCustomer.GetWholeEntity(cart.CustomerId);
+            cart = db.GetWholeEntity(cart.CustomerId);
             cart.TotalCaloricValue = ml.GetTotalCaloricValue(cart);
-            int allowedCaloricValue = ml.GetCaloricValue(cart.TotalCaloricValue, cart.MealTimeId);
+            if (appropriateCustomer.CaloricGoal != null)
+            {
+                int allowedCaloricValue = ml.GetCaloricValue((int)appropriateCustomer.CaloricGoal, 
+                    cart.MealTimeId);
+
+                if (allowedCaloricValue < cart.TotalCaloricValue)
+                    return new ObjectResult("Too much calories for this mealtime!");
+            }
             db.Update(cart);
             db.Save();
+            cart.Customer = null;
+            cart.CartPart = null;
+            cart.Address = null;
+            cart.MealTime = null;
+
             return Ok(cart);
         }
 

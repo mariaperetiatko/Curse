@@ -47,6 +47,12 @@ namespace EasyEat.Repositories
             db.Customer.Add(customer);
         }
 
+        public Customer GetCustomer(string tokenId)
+        {
+            Customer customer = db.Customer.Where(x => x.IdentityId == tokenId).FirstOrDefault();
+            return customer;
+        } 
+
         public void Update(Customer customer)
         {
             db.Entry(customer).State = EntityState.Modified;

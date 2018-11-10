@@ -25,6 +25,8 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Localization;
+using Swashbuckle.AspNetCore.Swagger;
+
 
 namespace EasyEat
 {
@@ -131,7 +133,11 @@ namespace EasyEat
                     options.DataAnnotationLocalizerProvider = (type, factory) =>
                     factory.Create(null);
                 })
-                .AddViewLocalization(); ;
+                .AddViewLocalization();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -150,7 +156,7 @@ namespace EasyEat
             };
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
-                DefaultRequestCulture = new RequestCulture("ru"),
+                DefaultRequestCulture = new RequestCulture("en"),
                 SupportedCultures = supportedCultures,
                 SupportedUICultures = supportedCultures
             });
@@ -182,6 +188,13 @@ namespace EasyEat
                       .AllowAnyHeader()
                       .AllowCredentials()
           );
+            app.UseSwagger();
+            app.UseDeveloperExceptionPage();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
             app.UseMvc();
         }
     }
