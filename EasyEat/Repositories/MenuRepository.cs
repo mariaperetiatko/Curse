@@ -38,6 +38,11 @@ namespace EasyEat.Repositories
                 .Include(x => x.CartPart).SingleOrDefault(x => x.Id == (int)id);
         }
 
+        public IEnumerable<Menu> GetMenuesByRestaurant(int restaurantId)
+        {
+            return db.Menu.Where(x => x.RestaurantId == restaurantId);
+        }
+
         public void Create(Menu menu)
         {
             db.Menu.Add(menu);

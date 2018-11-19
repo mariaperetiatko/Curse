@@ -32,7 +32,8 @@ namespace EasyEat.Controllers
         }
 
         // GET: api/<controller>
-        [Authorize(Roles = "Admin, RestaurantOwner")]
+        [Authorize]
+        [ProducesResponseType(typeof(IEnumerable<Restaurant>), StatusCodes.Status200OK)]
         [HttpGet]
         public IEnumerable<Restaurant> Get()
         {

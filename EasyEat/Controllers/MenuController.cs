@@ -24,6 +24,7 @@ namespace EasyEat.Controllers
 
         // GET: api/<controller>
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<Menu>), StatusCodes.Status200OK)]
         public IEnumerable<Menu> Get()
         {
             return db.GetEntityList();
@@ -31,12 +32,21 @@ namespace EasyEat.Controllers
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(Menu), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
             Menu menu = db.GetEntity(id);
             if (menu == null)
                 return NotFound();
             return new ObjectResult(menu);
+        }
+
+        // GET api/<controller>/5
+        [HttpGet("GetMenuesByRestaurant/{id}")]
+        [ProducesResponseType(typeof(IEnumerable<Menu>), StatusCodes.Status200OK)]
+        public IEnumerable<Menu> GetMenuesByRestaurant(int id)
+        {
+            return db.GetMenuesByRestaurant(id);
         }
 
         // POST api/<controller>

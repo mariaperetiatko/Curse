@@ -25,6 +25,7 @@ namespace EasyEat.Controllers
 
         // GET: api/<controller>
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<Dish>), StatusCodes.Status200OK)]
         public IEnumerable<Dish> Get()
         {
             return db.GetEntityList();
@@ -32,6 +33,7 @@ namespace EasyEat.Controllers
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(Dish), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
             Dish dish = db.GetEntity(id);
