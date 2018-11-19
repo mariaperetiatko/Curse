@@ -18,11 +18,14 @@ namespace EasyEat.Controllers
     [Route("api/FoodStyleProduct")]
     public class FoodStyleProductController : Controller
     {
-        IRepository<FoodStyleProduct> db;
+        FoodStyleProductRepository db;
+        SpecialProductRepository dbSpecialProduct;
 
         public FoodStyleProductController()
         {
             db = new FoodStyleProductRepository();
+            this.dbSpecialProduct = new SpecialProductRepository();
+
         }
 
         // GET: api/<controller>
@@ -70,6 +73,22 @@ namespace EasyEat.Controllers
             db.Update(foodStyleProduct);
             db.Save();
             return Ok(foodStyleProduct);
+        }
+
+        // GET: api/<controller>
+        [Authorize]
+        [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
+        [HttpGet("ProductByFoodStyle/{foodStyleId}")]
+        public IEnumerable<Product> ProductByFoodStyle(int foodStyleId)
+        {
+            List<Product> products = db.GetProductsByFoodStyle(foodStyleId);
+            for (int i = 0; i < products.Count(); i++)
+            {
+                products[i].Ingredient = null;
+                products[i].SpecialProduct = null;
+                products[i].FoodStyleProduct = null;
+            }
+            return products.AsEnumerable();
         }
 
         // DELETE api/<controller>/5

@@ -34,11 +34,12 @@ namespace EasyEat.Controllers
             RestaurantDb = new RestaurantRepository();
             DeliveryAddressDb = new DeliveryAddressRepository();
             ml = new MainLogic();
-           
+
         }
 
         // GET api/<controller>/5
-        [HttpGet("/Appropriate/{customerId}, {radius}, {addressId}")/*, Route("Appropriate")*/]
+        [HttpGet("Appropriate/{customerId}, {radius}, {addressId}")]
+        //[Route("Appropriate")]
         public IActionResult FindRestaurantsByAppropriate(int customerId, int radius, int addressId)
         {
             Customer customer = CustomerDb.GetEntity(customerId);
@@ -62,7 +63,9 @@ namespace EasyEat.Controllers
         }
 
         // GET api/<controller>/5
-        [HttpGet("Favourite/{customerId}, {radius}, {addressId}")/*, Route("Favourite")*/]
+        [ProducesResponseType(typeof(List<int>), StatusCodes.Status200OK)]
+        [HttpGet("Favourite/{customerId}, {radius}, {addressId}")]
+        //[Route("Favourite")]
         public IActionResult FindRestaurantsByFavourite(int customerId, int radius, int addressId)
         {
             Customer customer = CustomerDb.GetEntity(customerId);

@@ -25,9 +25,10 @@ namespace EasyEat.Helpers
                 public static IList<string> UserRoleClaims { get; set; } = new List<string>
                                                             {
                                                                 "Admin",
-                                                                "User"
+                                                                "Member",
+                                                                "RestaurantOwner"
 
-                                                            };
+                };
             }
 
         }

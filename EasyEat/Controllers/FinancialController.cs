@@ -26,8 +26,8 @@ namespace EasyEat.Controllers
             dbCustomer = new CustomerRepository();
         }
 
-        [Route("Pay")]
-        [HttpGet("{orderId}")]
+        //[Route("Pay")]
+        [HttpGet("Pay/{orderId}")]
         public IActionResult Pay(int orderId)
         {
             FoodOrder foodOrder = dbFoodOrder.GetWholeEntity(orderId);
@@ -46,8 +46,9 @@ namespace EasyEat.Controllers
             return new ObjectResult("Succesful pay!");
         }
 
-        [HttpGet("{customerId}, {moneySum}")]
-        [Route("IncreaseBalance")]
+        [HttpGet("IncreaseBalance/{customerId}, {moneySum}")]
+        //[Route("IncreaseBalance")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public IActionResult IncreaseBalance(int customerId, int moneySum)
         {
             if (moneySum <= 0)

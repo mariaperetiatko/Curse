@@ -20,7 +20,7 @@ namespace EasyEat.Models
 
             var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var UserManager = serviceProvider.GetRequiredService<UserManager<User>>();
-            string[] roleNames = { "Admin", "Manager", "Member" };
+            string[] roleNames = { "Admin", "RestaurantOwner", "Member" };
             IdentityResult roleResult;
 
             foreach (var roleName in roleNames)

@@ -19,14 +19,18 @@ namespace EasyEat.Controllers
     public class FoodStyleController : Controller
     {
         IRepository<FoodStyle> db;
+        SpecialProductRepository dbProduct;
+
 
         public FoodStyleController()
         {
             db = new FoodStyleRepository();
+            dbProduct = new SpecialProductRepository();
         }
 
         // GET: api/<controller>
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<FoodStyle>), StatusCodes.Status200OK)]
         public IEnumerable<FoodStyle> Get()
         {
             return db.GetEntityList();
@@ -34,6 +38,7 @@ namespace EasyEat.Controllers
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(FoodStyle), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
             FoodStyle foodStyle = db.GetEntity(id);
@@ -42,8 +47,22 @@ namespace EasyEat.Controllers
             return new ObjectResult(foodStyle);
         }
 
+        // GET api/<controller>/5
+        [HttpGet("GetByCustomer")]
+        [ProducesResponseType(typeof(FoodStyle), StatusCodes.Status200OK)]
+        public IActionResult GetByCustomer()
+        {
+            string userJWTId = User.FindFirst("id")?.Value;
+            Customer customer = dbProduct.GetCustomer(userJWTId);
+            FoodStyle foodStyle = db.GetEntity(customer.FoodStyleId);
+            if (foodStyle == null)
+                return NotFound();
+            return new ObjectResult(foodStyle);
+        }
+
         // POST api/<controller>
         [Authorize(Roles = "Admin, RestaurantOwner")]
+        [ProducesResponseType(typeof(FoodStyle), StatusCodes.Status200OK)]
         [HttpPost]
         public IActionResult Create([FromBody]FoodStyle foodStyle)
         {
@@ -59,6 +78,7 @@ namespace EasyEat.Controllers
         // PUT api/<controller>
         [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpPut]
+        [ProducesResponseType(typeof(FoodStyle), StatusCodes.Status200OK)]
         public IActionResult Update([FromBody]FoodStyle foodStyle)
         {
             if (foodStyle == null)
@@ -74,6 +94,7 @@ namespace EasyEat.Controllers
         // DELETE api/<controller>/5
         [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(FoodStyle), StatusCodes.Status200OK)]
         public IActionResult Delete(int id)
         {
             FoodStyle foodStyle = db.GetEntity(id);

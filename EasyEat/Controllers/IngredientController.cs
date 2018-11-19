@@ -18,10 +18,12 @@ namespace EasyEat.Controllers
     public class IngredientController : Controller
     {
         IRepository<Ingredient> db;
-
+        SpecialProductRepository dbSpecialProduct;
         public IngredientController()
         {
             db = new IngredientRepository();
+            this.dbSpecialProduct = new SpecialProductRepository();
+
         }
 
         // GET: api/<controller>
@@ -70,6 +72,8 @@ namespace EasyEat.Controllers
             db.Save();
             return Ok(ingredient);
         }
+
+       
 
         // DELETE api/<controller>/5
         [Authorize(Roles = "Admin, RestaurantOwner")]

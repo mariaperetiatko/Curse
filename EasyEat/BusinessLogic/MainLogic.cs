@@ -88,8 +88,8 @@ namespace EasyEat.BusinessLogic
         }
 
 
-        public static List<Restaurant> FindInRadius(double customerXCoordinate, double customerYCoordinate, 
-                                             List<Restaurant> allRestaurants,int radius)
+        public static List<Restaurant> FindInRadius(double customerXCoordinate, 
+            double customerYCoordinate, List<Restaurant> allRestaurants, int radius)
         {
             List<Restaurant> resultingRestaurants = new List<Restaurant>();
             foreach (Restaurant restaurant in allRestaurants)
@@ -178,7 +178,6 @@ namespace EasyEat.BusinessLogic
                 if (isAppropriate)
                 {
                     resultingRestaurants.Add(restaurant.Id);
-                    //break;
                 }
             }
             return resultingRestaurants;

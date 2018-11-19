@@ -16,14 +16,17 @@ namespace EasyEat.Controllers
     public class SpecialProductController : Controller
     {
         SpecialProductRepository db;
+        ProductRepository productRepository;
 
         public SpecialProductController()
         {
             this.db = new SpecialProductRepository();
+            this.productRepository = new ProductRepository();
         }
 
         // GET: api/<controller>
         [Authorize(Roles = "Admin, Member")]
+        [ProducesResponseType(typeof(IEnumerable<SpecialProduct>), StatusCodes.Status200OK)]
         [HttpGet]
         public IEnumerable<SpecialProduct> Get()
         {
@@ -39,8 +42,83 @@ namespace EasyEat.Controllers
             return specialProducts.AsEnumerable();
         }
 
+
+        // GET: api/<controller>
+        [Authorize(Roles = "Admin, Member")]
+        [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
+        [HttpGet("NotSpecialProducts")]
+        public IEnumerable<Product> NotSpecialProducts()
+        {
+            string userJWTId = User.FindFirst("id")?.Value;
+            Customer customer = db.GetCustomer(userJWTId);
+            if (customer == null)
+            {
+                return productRepository.GetEntityList();
+            }
+            List<int> specialProductIds = db.GetSpecialProductByCustomer(customer.Id)
+                .Select(x => x.ProductId).ToList();
+
+            List<int> productIds = productRepository.GetEntityList()
+                .Select(x => x.Id).ToList();
+            List<Product> notSpecialProducts = new List<Product>();
+            for (int i = 0; i < productIds.Count(); i++)
+            {
+                if (!specialProductIds.Contains(productIds[i]))
+                {
+                    notSpecialProducts.Add(productRepository.GetEntity(productIds[i]));
+                    notSpecialProducts.Last().FoodStyleProduct = null;
+                    notSpecialProducts.Last().Ingredient = null;
+                    notSpecialProducts.Last().SpecialProduct = null;
+                }
+            }
+            return notSpecialProducts.AsEnumerable();
+        }
+
+        // GET: api/<controller>
+        [Authorize(Roles = "Member")]
+        [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
+        [HttpGet("AllowedProductBySpecial")]
+        public IEnumerable<Product> AllowedProductBySpecial()
+        {
+            string userJWTId = User.FindFirst("id")?.Value;
+            Customer customer = db.GetCustomer(userJWTId);
+            List<SpecialProduct> specialProducts = db.GetSpecialProductByCustomer(customer.Id)
+                .Where(x => x.Allowance == 1).ToList();
+            List<Product> products = new List<Product>();
+            for (int i = 0; i < specialProducts.Count(); i++)
+            {
+                products.Add(productRepository.GetEntity(specialProducts[i].ProductId));
+                products[i].Ingredient = null;
+                products[i].SpecialProduct = null;
+                products[i].FoodStyleProduct = null;
+            }
+            return products.AsEnumerable();
+        }
+
+        // GET: api/<controller>
+        [Authorize(Roles = "Member")]
+        [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
+        [HttpGet("NotAllowedProductBySpecial")]
+        public IEnumerable<Product> NotAllowedProductBySpecial()
+        {
+            string userJWTId = User.FindFirst("id")?.Value;
+            Customer customer = db.GetCustomer(userJWTId);
+            List<SpecialProduct> specialProducts = db.GetSpecialProductByCustomer(customer.Id)
+                .Where(x => x.Allowance == 0).ToList();
+            List<Product> products = new List<Product>();
+            for (int i = 0; i < specialProducts.Count(); i++)
+            {
+                products.Add(productRepository.GetEntity(specialProducts[i].ProductId));
+                products[i].Ingredient = null;
+                products[i].SpecialProduct = null;
+                products[i].FoodStyleProduct = null;
+            }
+            return products.AsEnumerable();
+        }
+
         // GET api/<controller>/5
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(SpecialProduct), StatusCodes.Status200OK)]
         [ActionName("Get")]
         public IActionResult Get([FromQuery]SpecialProductKey id)
         {
@@ -51,6 +129,7 @@ namespace EasyEat.Controllers
         }
 
         [HttpPost("CreateAllowed")]
+        [ProducesResponseType(typeof(SpecialProduct), StatusCodes.Status200OK)]
         public IActionResult CreateAllowed([FromBody]SpecialProduct specialProduct)
         {
             if (specialProduct == null)
@@ -79,6 +158,7 @@ namespace EasyEat.Controllers
         }
 
         [HttpPost("CreateNotAllowed")]
+        [ProducesResponseType(typeof(SpecialProduct), StatusCodes.Status200OK)]
         public IActionResult CreateNotAllowed([FromBody]SpecialProduct specialProduct)
         {
             if (specialProduct == null)
@@ -104,6 +184,7 @@ namespace EasyEat.Controllers
         }
 
         [HttpPut]
+        [ProducesResponseType(typeof(SpecialProduct), StatusCodes.Status200OK)]
         public IActionResult Change([FromBody]SpecialProduct specialProduct)
         {
             if (specialProduct == null)
@@ -117,6 +198,8 @@ namespace EasyEat.Controllers
 
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
+        [ActionName("Delete")]
+        [ProducesResponseType(typeof(SpecialProduct), StatusCodes.Status200OK)]
         public IActionResult Delete([FromQuery]SpecialProductKey id)
         {
             string userJWTId = User.FindFirst("id")?.Value;
@@ -134,6 +217,7 @@ namespace EasyEat.Controllers
             db.Save();
             return Ok(specialProduct);
         }
+
 
     }
 }

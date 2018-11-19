@@ -52,7 +52,15 @@ namespace EasyEat
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", p =>
+                {
+                    p.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
             var connection = @"Server=DESKTOP-LLK7E72\SQLEXPRESS;Database=Eat;Trusted_Connection=True;ConnectRetryCount=0";
             services.AddDbContext<EatContext>(options => options.UseSqlServer(connection));
             services.AddIdentity<IdentityUser, IdentityRole>()
@@ -106,11 +114,11 @@ namespace EasyEat
                 configureOptions.SaveToken = true;
             });
 
-            // api user claim policy
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("User", policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
-            });
+            //// api user claim policy
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("User", policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
+            //});
             services.AddTransient<IStringLocalizer, EFStringLocalizer>();
             services.AddSingleton<IStringLocalizerFactory>(new EFStringLocalizerFactory(connection));
 
@@ -182,12 +190,8 @@ namespace EasyEat
             app.UseAuthentication();
             app.UseDefaultFiles();
             app.UseStaticFiles();
-            app.UseCors(builder => builder
-                      .AllowAnyOrigin()
-                      .AllowAnyMethod()
-                      .AllowAnyHeader()
-                      .AllowCredentials()
-          );
+            app.UseCors("AllowAll");
+
             app.UseSwagger();
             app.UseDeveloperExceptionPage();
             app.UseSwaggerUI(c =>

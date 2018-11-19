@@ -16,10 +16,12 @@ namespace EasyEat.Controllers
     public class FavouriteDishController : Controller
     {
         FavouriteDishRepository db;
+        DishRepository dishRepository;
 
         public FavouriteDishController()
         {
             db = new FavouriteDishRepository();
+            dishRepository = new DishRepository();
         }
 
         // GET: api/<controller>
@@ -54,6 +56,7 @@ namespace EasyEat.Controllers
         // POST api/<controller>
         [Authorize(Roles = "Admin, Member")]
         [HttpPost]
+        [ProducesResponseType(typeof(FavouriteDish), StatusCodes.Status200OK)]
         public IActionResult Create([FromBody]FavouriteDish dish)
         {
             if (!ModelState.IsValid)
@@ -97,6 +100,7 @@ namespace EasyEat.Controllers
         [Authorize(Roles = "Admin, Member")]
         [HttpDelete("{id}")]
         [ActionName("Delete")]
+        [ProducesResponseType(typeof(FavouriteDish), StatusCodes.Status200OK)]
         public IActionResult Delete([FromQuery]FavouriteDishKey id)
         {
             string userJWTId = User.FindFirst("id")?.Value;
@@ -104,16 +108,71 @@ namespace EasyEat.Controllers
             if (customer != null)
             {
                 id.CustomerId = customer.Id;
+                
             }
             FavouriteDish dish = db.GetEntity(id);
             if (dish == null)
             {
                 return NotFound();
-            }        
-          
+            }
+
             db.Delete(id);
             db.Save();
             return Ok(dish);
+        }
+
+        // GET: api/<controller>
+        [Authorize(Roles = "Admin, Member")]
+        [ProducesResponseType(typeof(IEnumerable<Dish>), StatusCodes.Status200OK)]
+        [HttpGet("GetFavouriteDishesByCustomer")]
+        public IEnumerable<Dish> GetFavouriteDishesByCustomer()
+        {
+            string userJWTId = User.FindFirst("id")?.Value;
+            Customer customer = db.GetCustomer(userJWTId);
+            if (customer == null)
+            {
+                return dishRepository.GetEntityList();
+            }
+            List<int> favouriteDishesIds = db.GetFavouriteDishByCustomer(customer.Id)
+                .Select(x => x.DishId).ToList();
+
+            List<Dish> favouriteDishes = new List<Dish>();
+            for (int i = 0; i < favouriteDishesIds.Count(); i++)
+            {
+                favouriteDishes.Add(dishRepository.GetEntity(favouriteDishesIds[i]));
+                favouriteDishes.Last().Ingredient = null;
+                favouriteDishes.Last().Menu = null;
+            }
+            return favouriteDishes.AsEnumerable();
+
+        }
+
+        // GET: api/<controller>
+        [Authorize(Roles = "Admin, Member")]
+        [ProducesResponseType(typeof(IEnumerable<Dish>), StatusCodes.Status200OK)]
+        [HttpGet("GetNotFavouriteDishesByCustomer")]
+        public IEnumerable<Dish> GetNotFavouriteDishesByCustomer()
+        {
+            string userJWTId = User.FindFirst("id")?.Value;
+            Customer customer = db.GetCustomer(userJWTId);
+            if (customer == null)
+            {
+                return dishRepository.GetEntityList();
+            }
+            List<int> favouriteDishesIds = db.GetFavouriteDishByCustomer(customer.Id)
+                .Select(x => x.DishId).ToList();
+            List<int> allDishesIds = dishRepository.GetEntityList().Select(x => x.Id).ToList();
+            List<Dish> notFavouriteDishes = new List<Dish>();
+            for (int i = 0; i < allDishesIds.Count(); i++)
+            {
+                if (!favouriteDishesIds.Contains(allDishesIds[i]))
+                {
+                    notFavouriteDishes.Add(dishRepository.GetEntity(allDishesIds[i]));
+                    notFavouriteDishes.Last().Ingredient = null;
+                    notFavouriteDishes.Last().Menu = null;
+                }
+            }
+            return notFavouriteDishes.AsEnumerable();
         }
     }
 }

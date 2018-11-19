@@ -28,12 +28,14 @@ namespace EasyEat.Controllers
 
         // GET: api/<controller>
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
         public IEnumerable<Product> Get()
         {
             return db.GetEntityList();
         }
 
         // GET api/<controller>/5
+        [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
