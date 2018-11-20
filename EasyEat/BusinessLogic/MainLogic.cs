@@ -104,10 +104,10 @@ namespace EasyEat.BusinessLogic
         }
 
 
-        public List<int> FindAppropriateRestaurants(Customer customer, List<Restaurant> restaurantsInRadius, 
+        public List<Restaurant> FindAppropriateRestaurants(Customer customer, List<Restaurant> restaurantsInRadius, 
             List<Product> products)
         {
-            List<int> resultingRestaurants = new List<int>();
+            List<Restaurant> resultingRestaurants = new List<Restaurant>();
             customer = cr.GetWholeEntity(customer.Id);
 
             for (int i = 0; i < restaurantsInRadius.Count(); i++)
@@ -141,7 +141,8 @@ namespace EasyEat.BusinessLogic
                     }
                     if (isAppropriate)
                     {
-                        resultingRestaurants.Add(restaurantsInRadius[i].Id);
+                        resultingRestaurants.Add(restaurantsInRadius[i]);
+                        resultingRestaurants.Last().Menu = null;
                         break;
                     }
                 }
@@ -150,9 +151,9 @@ namespace EasyEat.BusinessLogic
         }
 
 
-        public List<int> FindByFavourites(Customer customer, List<Restaurant> restaurantsInRadius)
+        public List<Restaurant> FindByFavourites(Customer customer, List<Restaurant> restaurantsInRadius)
         {
-            List<int> resultingRestaurants = new List<int>();
+            List<Restaurant> resultingRestaurants = new List<Restaurant>();
             customer = cr.GetWholeEntity(customer.Id);
 
             for(int i = 0; i < restaurantsInRadius.Count(); i++)
@@ -177,9 +178,11 @@ namespace EasyEat.BusinessLogic
 
                 if (isAppropriate)
                 {
-                    resultingRestaurants.Add(restaurant.Id);
+                    resultingRestaurants.Add(restaurant);
+                    resultingRestaurants.Last().Menu = null;
                 }
             }
+
             return resultingRestaurants;
         }
     }

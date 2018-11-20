@@ -40,6 +40,8 @@ namespace EasyEat.Controllers
         // GET api/<controller>/5
         [HttpGet("Appropriate/{customerId}, {radius}, {addressId}")]
         //[Route("Appropriate")]
+        [ProducesResponseType(typeof(List<Restaurant>), StatusCodes.Status200OK)]
+
         public IActionResult FindRestaurantsByAppropriate(int customerId, int radius, int addressId)
         {
             Customer customer = CustomerDb.GetEntity(customerId);
@@ -56,14 +58,14 @@ namespace EasyEat.Controllers
             List<Restaurant> restaurantsInRadius = MainLogic.FindInRadius(deliveryAddress.Xcoordinate,
                 deliveryAddress.Ycoordinate, allRestaurants, radius);
 
-            List<int> appropriateRestaurants = ml.FindAppropriateRestaurants(customer,
+            List<Restaurant> appropriateRestaurants = ml.FindAppropriateRestaurants(customer,
                 restaurantsInRadius, products);
 
             return new ObjectResult(appropriateRestaurants);
         }
 
         // GET api/<controller>/5
-        [ProducesResponseType(typeof(List<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<Restaurant>), StatusCodes.Status200OK)]
         [HttpGet("Favourite/{customerId}, {radius}, {addressId}")]
         //[Route("Favourite")]
         public IActionResult FindRestaurantsByFavourite(int customerId, int radius, int addressId)
@@ -80,7 +82,7 @@ namespace EasyEat.Controllers
             List<Restaurant> restaurantsInRadius = MainLogic.FindInRadius(deliveryAddress.Xcoordinate,
                 deliveryAddress.Ycoordinate, allRestaurants, radius);
 
-            List<int> favouriteRestaurants = ml.FindByFavourites(customer,
+            List<Restaurant> favouriteRestaurants = ml.FindByFavourites(customer,
                 restaurantsInRadius);
 
             return new OkObjectResult(favouriteRestaurants);
