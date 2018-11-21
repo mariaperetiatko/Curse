@@ -24,6 +24,7 @@ namespace EasyEat.Controllers
         }       
 
         [Authorize(Roles = "Member, Admin")]
+        [ProducesResponseType(typeof(IEnumerable<DeliveryAddress>), StatusCodes.Status200OK)]
         [HttpGet]
         public IEnumerable<DeliveryAddress> Get()
         {
@@ -40,6 +41,7 @@ namespace EasyEat.Controllers
         }
 
         // GET api/<controller>/5
+        [ProducesResponseType(typeof(DeliveryAddress), StatusCodes.Status200OK)]
         [Authorize(Roles = "Admin, Member")]
         [HttpGet("{id}")]
         public IActionResult Get(int id)
@@ -51,6 +53,7 @@ namespace EasyEat.Controllers
         }
 
         // POST api/<controller>
+        [ProducesResponseType(typeof(DeliveryAddress), StatusCodes.Status200OK)]
         [HttpPost]
         [Authorize(Roles = "Admin, Member")]
         public IActionResult Create([FromBody]DeliveryAddress deliveryAddress)
@@ -73,6 +76,7 @@ namespace EasyEat.Controllers
         }
 
         // PUT api/<controller>
+        [ProducesResponseType(typeof(DeliveryAddress), StatusCodes.Status200OK)]
         [HttpPut]
         public IActionResult Update([FromBody]DeliveryAddress deliveryAddress)
         {
@@ -95,6 +99,7 @@ namespace EasyEat.Controllers
         }
 
         // DELETE api/<controller>/5
+        [ProducesResponseType(typeof(DeliveryAddress), StatusCodes.Status200OK)]
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {

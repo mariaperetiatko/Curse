@@ -27,6 +27,7 @@ namespace EasyEat.Controllers
         }
 
         // GET: api/<controller>
+        [ProducesResponseType(typeof(IEnumerable<CartPart>), StatusCodes.Status200OK)]
         [Authorize(Roles = "Admin, Member")]
         [HttpGet]
         public IEnumerable<CartPart> Get()
@@ -44,9 +45,9 @@ namespace EasyEat.Controllers
         }
 
         // GET api/<controller>/5
+        [ProducesResponseType(typeof(CartPart), StatusCodes.Status200OK)]
         [Authorize(Roles = "Admin, Member")]
-        [HttpGet("{id}")]
-        [ActionName("Get")]
+        [HttpGet("Get/{id}")]
         public IActionResult Get([FromQuery]CartPartKey id)
         {
             CartPart cartPart = db.GetEntity(id);
@@ -56,6 +57,7 @@ namespace EasyEat.Controllers
         }
 
         // POST api/<controller>
+        [ProducesResponseType(typeof(CartPart), StatusCodes.Status200OK)]
         [Authorize(Roles = "Admin, Member")]
         [HttpPost]
         public IActionResult Create([FromBody]CartPart cartPart)
@@ -81,6 +83,7 @@ namespace EasyEat.Controllers
         }
 
         // PUT api/<controller>
+        [ProducesResponseType(typeof(CartPart), StatusCodes.Status200OK)]
         [Authorize(Roles = "Admin, Member")]
         [HttpPut]
         public IActionResult Undate([FromBody]CartPart cartPart)
@@ -97,13 +100,17 @@ namespace EasyEat.Controllers
             }
             db.Update(cartPart);
             db.Save();
+            Cart cart = cr.GetEntity(cartPart.CartId);
+            cart.TotalCaloricValue = ml.GetTotalCaloricValue(cart);
+            cr.Update(cart);
+            cr.Save();
             return Ok(cartPart);
         }
 
         // DELETE api/<controller>/5
+        [ProducesResponseType(typeof(CartPart), StatusCodes.Status200OK)]
         [Authorize(Roles = "Admin, Member")]
-        [HttpDelete("{id}")]
-        [ActionName("Delete")]
+        [HttpDelete("Delete/{id}")]
         public IActionResult Delete([FromQuery]CartPartKey id)
         {
             string userJWTId = User.FindFirst("id")?.Value;
@@ -120,6 +127,14 @@ namespace EasyEat.Controllers
             db.Delete(id);
             db.Save();
             return Ok(cartPart);
+        }
+
+        [ProducesResponseType(typeof(IEnumerable<CartPart>), StatusCodes.Status200OK)]
+        [Authorize(Roles = "Admin, Member")]
+        [HttpGet("GetCartPartByCustomer/{id}")]
+        public IEnumerable<CartPart> GetCartPartByCustomer(int id)
+        {
+            return db.GetCartPartByCustomer(id);
         }
     }
 }

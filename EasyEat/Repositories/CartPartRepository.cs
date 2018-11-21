@@ -61,6 +61,7 @@ namespace EasyEat.Repositories
             return cartPart;
         }
 
+
         public void Create(CartPart cartPart)
         {
             db.CartPart.Add(cartPart);

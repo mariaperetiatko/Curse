@@ -70,12 +70,14 @@ namespace EasyEat.BusinessLogic
             {
                 dishes[i] = dr.GetWholeEntity(dishes[i].Id);
                 
-                List<Ingredient> ingredients = dishes[i].Ingredient.ToList();                
+                List<Ingredient> ingredients = dishes[i].Ingredient.ToList();
+                int singleCountCaloricValue = 0;
                 for(int j = 0; j < ingredients.Count(); j++)
                 {
                     Product product = pr.GetEntity(ingredients[j].ProductId);
-                    totalCaloric += product.CaloricValue * ingredients[j].ProductWeight / 100;
+                    singleCountCaloricValue += product.CaloricValue * ingredients[j].ProductWeight / 100;
                 }
+                totalCaloric += (cartParts[i].DishCount * singleCountCaloricValue);
             }
             
             return totalCaloric;
