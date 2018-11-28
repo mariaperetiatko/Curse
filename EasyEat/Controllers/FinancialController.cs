@@ -26,7 +26,7 @@ namespace EasyEat.Controllers
             dbCustomer = new CustomerRepository();
         }
 
-        //[Route("Pay")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [HttpGet("Pay/{orderId}")]
         public IActionResult Pay(int orderId)
         {
@@ -41,7 +41,7 @@ namespace EasyEat.Controllers
             customer.Balance = newBalance;
             dbCustomer.Update(customer);
             dbCustomer.Save();
-            dbFoodOrder.Delete(orderId);
+            //dbFoodOrder.Delete(orderId);
             dbFoodOrder.Save();
             return new ObjectResult("Succesful pay!");
         }

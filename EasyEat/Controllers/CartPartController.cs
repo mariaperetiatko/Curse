@@ -110,7 +110,8 @@ namespace EasyEat.Controllers
         // DELETE api/<controller>/5
         [ProducesResponseType(typeof(CartPart), StatusCodes.Status200OK)]
         [Authorize(Roles = "Admin, Member")]
-        [HttpDelete("Delete/{id}")]
+        [HttpDelete("{id}")]
+        [ActionName("Delete")]
         public IActionResult Delete([FromQuery]CartPartKey id)
         {
             string userJWTId = User.FindFirst("id")?.Value;

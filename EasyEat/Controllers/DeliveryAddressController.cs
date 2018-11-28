@@ -91,10 +91,11 @@ namespace EasyEat.Controllers
             {
                 deliveryAddress.CustomerId = customer.Id;
             }
-            deliveryAddress = null;
+            //deliveryAddress = null;
             db.Update(deliveryAddress);
 
             db.Save();
+            deliveryAddress.Customer = null;
             return Ok(deliveryAddress);
         }
 

@@ -65,6 +65,33 @@ namespace EasyEat.Controllers
         }
 
         // GET api/<controller>/5
+        [HttpGet("AppropriateRuntimePosition/{customerId}, {radius}, {Xcoordinate}, {Ycoordinate}")]
+        //[Route("Appropriate")]
+        [ProducesResponseType(typeof(List<Restaurant>), StatusCodes.Status200OK)]
+
+        public IActionResult FindRestaurantsByAppropriateRuntimePosition(int customerId, int radius, 
+            double Xcoordinate, double Ycoordinate)
+        {
+            Customer customer = CustomerDb.GetEntity(customerId);
+            List<Restaurant> allRestaurants = RestaurantDb.GetEntityList().ToList();
+            List<Product> products = ProductDb.GetWholeEntityList().ToList();
+
+            if (customer == null || allRestaurants == null
+                || products == null)
+            {
+                return NotFound();
+            }
+
+            List<Restaurant> restaurantsInRadius = MainLogic.FindInRadius(Xcoordinate,
+                Ycoordinate, allRestaurants, radius);
+
+            List<Restaurant> appropriateRestaurants = ml.FindAppropriateRestaurants(customer,
+                restaurantsInRadius, products);
+
+            return new ObjectResult(appropriateRestaurants);
+        }
+
+        // GET api/<controller>/5
         [ProducesResponseType(typeof(List<Restaurant>), StatusCodes.Status200OK)]
         [HttpGet("Favourite/{customerId}, {radius}, {addressId}")]
         //[Route("Favourite")]
@@ -81,6 +108,30 @@ namespace EasyEat.Controllers
 
             List<Restaurant> restaurantsInRadius = MainLogic.FindInRadius(deliveryAddress.Xcoordinate,
                 deliveryAddress.Ycoordinate, allRestaurants, radius);
+
+            List<Restaurant> favouriteRestaurants = ml.FindByFavourites(customer,
+                restaurantsInRadius);
+
+            return new OkObjectResult(favouriteRestaurants);
+        }
+
+        // GET api/<controller>/5
+        [ProducesResponseType(typeof(List<Restaurant>), StatusCodes.Status200OK)]
+        [HttpGet("FavouriteRuntimePosition/{customerId}, {radius}, {Xcoordinate}, {Ycoordinate}")]
+        //[Route("Favourite")]
+        public IActionResult FindRestaurantsByFavouriteRuntimePosition(int customerId, int radius,
+            double Xcoordinate, double Ycoordinate)
+        {
+            Customer customer = CustomerDb.GetEntity(customerId);
+            List<Restaurant> allRestaurants = RestaurantDb.GetEntityList().ToList();
+
+            if (customer == null || allRestaurants == null)
+            {
+                return NotFound();
+            }
+
+            List<Restaurant> restaurantsInRadius = MainLogic.FindInRadius(Xcoordinate,
+                Ycoordinate, allRestaurants, radius);
 
             List<Restaurant> favouriteRestaurants = ml.FindByFavourites(customer,
                 restaurantsInRadius);

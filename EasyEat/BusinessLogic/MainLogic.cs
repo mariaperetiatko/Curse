@@ -97,7 +97,7 @@ namespace EasyEat.BusinessLogic
             foreach (Restaurant restaurant in allRestaurants)
             {
                 if(Math.Sqrt(Math.Pow(restaurant.Xcoordinate - customerXCoordinate, 2) +
-                        Math.Pow(restaurant.Ycoordinate - customerYCoordinate, 2)) <= radius)
+                        Math.Pow(restaurant.Ycoordinate - customerYCoordinate, 2)) <= radius/111)
                 {
                     resultingRestaurants.Add(restaurant);
                 }
