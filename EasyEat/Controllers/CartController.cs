@@ -97,7 +97,7 @@ namespace EasyEat.Controllers
             {
                 cart.CustomerId = customer.Id;
             }
-
+            string result = "";
             Customer appropriateCustomer = dbCustomer.GetWholeEntity(cart.CustomerId);
             // Cart savedCart = db.GetWholeEntity(cart.CustomerId);
             cart.TotalCaloricValue = ml.GetTotalCaloricValue(cart);
@@ -106,8 +106,8 @@ namespace EasyEat.Controllers
                 int allowedCaloricValue = ml.GetCaloricValue((int)appropriateCustomer.CaloricGoal, 
                     cart.MealTimeId);
 
-                //if (allowedCaloricValue < cart.TotalCaloricValue)
-                //    return new ObjectResult("Too much calories for this mealtime!");
+                if (allowedCaloricValue < cart.TotalCaloricValue)
+                    result += "Too much calories for this mealtime! Should be " + allowedCaloricValue.ToString();
             }
             db.Update(cart);
             db.Save();
@@ -115,8 +115,8 @@ namespace EasyEat.Controllers
             cart.CartPart = null;
             cart.Address = null;
             cart.MealTime = null;
-
-            return new ObjectResult("Cart is apdated!");
+            result += " Cart is apdated!";
+            return new ObjectResult(result);
         }
 
         // DELETE api/<controller>/5

@@ -56,6 +56,12 @@ namespace EasyEat.Repositories
 
         }
 
+        public List<FoodStyleProduct> GetFoodStyleProductsByFoodStyle(int foodStyleId)
+        {
+            return db.FoodStyleProduct.Where(x => x.FoodStyleId == foodStyleId).ToList();
+
+        }
+
         public void Create(FoodStyleProduct foodStyleProduct)
         {
             FoodStyleProduct prbableFoodStyleProduct = db.FoodStyleProduct

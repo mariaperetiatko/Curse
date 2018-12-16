@@ -78,7 +78,7 @@ namespace EasyEat.Controllers
             }
             //foodOrder.Customer = dbCustomer.GetEntity(foodOrder.CustomerId);
             Cart cart = dbFoodOrder.GetCart(foodOrder);
-            foodOrder.Address = cart.Address;
+            foodOrder.AddressId = cart.AddressId;
             foodOrder.DeliveryDate = cart.DeliveryDate;
             foodOrder.TotalCost = ml.GetTotalCost(foodOrder);
             dbFoodOrder.Create(foodOrder);

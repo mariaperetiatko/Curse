@@ -17,7 +17,7 @@ namespace EasyEat.Controllers
     [Route("api/Ingredient")]
     public class IngredientController : Controller
     {
-        IRepository<Ingredient> db;
+        IngredientRepository db;
         SpecialProductRepository dbSpecialProduct;
         public IngredientController()
         {
@@ -28,14 +28,24 @@ namespace EasyEat.Controllers
 
         // GET: api/<controller>
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<Ingredient>), StatusCodes.Status200OK)]
         public IEnumerable<Ingredient> Get()
         {
             return db.GetEntityList();
         }
 
+        // GET: api/<controller>
+        [HttpGet("GetIngredientByDish{dishId}")]
+        [ProducesResponseType(typeof(IEnumerable<Ingredient>), StatusCodes.Status200OK)]
+        public IEnumerable<Ingredient> GetIngredientByDish(int dishId)
+        {
+            return db.GetIngredientsByDish(dishId);
+        }
+
         // GET api/<controller>/5
         [HttpGet("{id}")]
         [ActionName("Get")]
+        [ProducesResponseType(typeof(Ingredient), StatusCodes.Status200OK)]
         public IActionResult Get([FromQuery]IngredientKey id)
         {
             Ingredient ingredient = db.GetEntity(id);
@@ -47,6 +57,7 @@ namespace EasyEat.Controllers
         // POST api/<controller>
         [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpPost]
+        [ProducesResponseType(typeof(Ingredient), StatusCodes.Status200OK)]
         public IActionResult Create([FromBody]Ingredient ingredient)
         {
             if (!ModelState.IsValid)
@@ -61,6 +72,7 @@ namespace EasyEat.Controllers
         // PUT api/<controller>
         [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpPut]
+        [ProducesResponseType(typeof(Ingredient), StatusCodes.Status200OK)]
         public IActionResult Update([FromBody]Ingredient ingredient)
         {
             if (ingredient == null)
@@ -79,6 +91,7 @@ namespace EasyEat.Controllers
         [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpDelete("{id}")]
         [ActionName("Delete")]
+        [ProducesResponseType(typeof(Ingredient), StatusCodes.Status200OK)]
         public IActionResult Delete([FromQuery]IngredientKey id)
         {
             Ingredient ingredient = db.GetEntity(id);

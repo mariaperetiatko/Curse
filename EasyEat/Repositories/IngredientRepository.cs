@@ -36,6 +36,11 @@ namespace EasyEat.Repositories
 
         }
 
+        public IEnumerable<Ingredient> GetIngredientsByDish(int dishId)
+        {
+            return db.Ingredient.Where(x => x.DishId == dishId);
+        }
+
         public void Create(Ingredient ingredient)
         {
             Ingredient prbableIngredient = db.Ingredient

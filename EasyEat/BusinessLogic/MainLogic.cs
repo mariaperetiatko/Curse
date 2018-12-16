@@ -83,6 +83,21 @@ namespace EasyEat.BusinessLogic
             return totalCaloric;
         }
 
+        public int GetDishCaloricValue(int dishId)
+        {           
+            Dish dish = dr.GetWholeEntity(dishId);
+
+            List<Ingredient> ingredients = dish.Ingredient.ToList();
+            int singleCountCaloricValue = 0;
+            for (int j = 0; j < ingredients.Count(); j++)
+            {
+                Product product = pr.GetEntity(ingredients[j].ProductId);
+                singleCountCaloricValue += product.CaloricValue * ingredients[j].ProductWeight / 100;
+            }   
+
+            return singleCountCaloricValue;
+        }
+
 
         public static int RefreshBalance(int balance, int moneyValue)
         {
@@ -120,8 +135,8 @@ namespace EasyEat.BusinessLogic
             List<int> allowedProductIds = customer.SpecialProduct.Where(x => x.Allowance == 1)
                 .Select(x => x.ProductId).ToList();
             
-            List<Product> allowedProducts = products.Where(x => allowedProductIds.Contains(x.Id))
-                .ToList();
+            //List<Product> allowedProducts = products.Where(x => allowedProductIds.Contains(x.Id))
+            //    .ToList();
 
             for (int i = 0; i < restaurantsInRadius.Count(); i++)
             {
@@ -131,11 +146,12 @@ namespace EasyEat.BusinessLogic
                     menues[j] = mr.GetWholeEntity(menues[j].Id);
                     menues[j].Dish = dr.GetWholeEntity(menues[j].DishId);
                     List<Ingredient> ingredients = menues[j].Dish.Ingredient.ToList();
+
                     bool isAppropriate = true;
 
                     foreach (Ingredient ingredient in ingredients)
                     {
-                        if (!allowedProducts.Contains(ingredient.Product))
+                        if (!allowedProductIds.Contains(ingredient.ProductId))
                         {
                             isAppropriate = false;
                             break;

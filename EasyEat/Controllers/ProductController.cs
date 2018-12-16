@@ -48,6 +48,7 @@ namespace EasyEat.Controllers
         // POST api/<controller>
         [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpPost]
+        [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
         public IActionResult Create([FromBody]Product product)
         {
             if (!ModelState.IsValid)
@@ -62,6 +63,7 @@ namespace EasyEat.Controllers
         // PUT api/<controller>
         [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpPut]
+        [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
         public IActionResult Update([FromBody]Product product)
         {
             if (product == null)
@@ -77,6 +79,7 @@ namespace EasyEat.Controllers
         // DELETE api/<controller>/5
         [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
         public IActionResult Delete(int id)
         {
             Product product = db.GetEntity(id);

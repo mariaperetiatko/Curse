@@ -62,6 +62,7 @@ namespace EasyEat
         // GET api/<controller>/5
         [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(Customer), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
             Customer customer = db.GetEntity(id);
@@ -72,6 +73,7 @@ namespace EasyEat
 
         // POST api/<controller>
         [HttpPost]
+        [ProducesResponseType(typeof(Customer), StatusCodes.Status200OK)]
         public IActionResult Create(Customer customer)
         {
             if (!ModelState.IsValid)
@@ -86,6 +88,7 @@ namespace EasyEat
         // PUT api/<controller>
         [Authorize(Roles = "Admin, Member")]
         [HttpPut]
+        [ProducesResponseType(typeof(Customer), StatusCodes.Status200OK)]
         public IActionResult Update([FromBody]Customer customer)
         {
             if (customer == null)

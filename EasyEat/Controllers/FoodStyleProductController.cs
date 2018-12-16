@@ -30,6 +30,7 @@ namespace EasyEat.Controllers
 
         // GET: api/<controller>
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<FoodStyleProduct>), StatusCodes.Status200OK)]
         public IEnumerable<FoodStyleProduct> Get()
         {
             return db.GetEntityList();
@@ -38,6 +39,7 @@ namespace EasyEat.Controllers
         // GET api/<controller>/5
         [HttpGet("{id}")]
         [ActionName("Get")]
+        [ProducesResponseType(typeof(FoodStyleProduct), StatusCodes.Status200OK)]
         public IActionResult Get([FromQuery]FoodStyleProductKey id)
         {
             FoodStyleProduct foodStyleProduct = db.GetEntity(id);
@@ -49,6 +51,7 @@ namespace EasyEat.Controllers
         // POST api/<controller>
         [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpPost]
+        [ProducesResponseType(typeof(FoodStyleProduct), StatusCodes.Status200OK)]
         public IActionResult Create([FromBody]FoodStyleProduct foodStyleProduct)
         {
             if (!ModelState.IsValid)
@@ -63,6 +66,7 @@ namespace EasyEat.Controllers
         // PUT api/<controller>
         [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpPut]
+        [ProducesResponseType(typeof(FoodStyleProduct), StatusCodes.Status200OK)]
         public IActionResult Update([FromBody]FoodStyleProduct foodStyleProduct)
         {
             if (foodStyleProduct == null)
@@ -91,10 +95,26 @@ namespace EasyEat.Controllers
             return products.AsEnumerable();
         }
 
+        // GET: api/<controller>
+        [Authorize]
+        [ProducesResponseType(typeof(IEnumerable<FoodStyleProduct>), StatusCodes.Status200OK)]
+        [HttpGet("FoodStyleProductsByFoodStyle/{foodStyleId}")]
+        public IEnumerable<FoodStyleProduct> FoodStyleProductsByFoodStyle(int foodStyleId)
+        {
+            List<FoodStyleProduct> products = db.GetFoodStyleProductsByFoodStyle(foodStyleId);
+            for (int i = 0; i < products.Count(); i++)
+            {
+                products[i].FoodStyle = null;
+                products[i].Product = null;
+            }
+            return products.AsEnumerable();
+        }
+
         // DELETE api/<controller>/5
         [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpDelete("{id}")]
         [ActionName("Delete")]
+        [ProducesResponseType(typeof(FoodStyleProduct), StatusCodes.Status200OK)]
         public IActionResult Delete([FromQuery]FoodStyleProductKey id)
         {
             FoodStyleProduct foodStyleProduct = db.GetEntity(id);

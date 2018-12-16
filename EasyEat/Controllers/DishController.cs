@@ -16,11 +16,13 @@ namespace EasyEat.Controllers
     [Route("api/Dish")]
     public class DishController : Controller
     {
-        IRepository<Dish> db;
+        DishRepository db;
+        MainLogic ml;
 
         public DishController()
         {
             db = new DishRepository();
+            ml = new MainLogic();
         }
 
         // GET: api/<controller>
@@ -45,6 +47,7 @@ namespace EasyEat.Controllers
         // POST api/<controller>
         [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpPost]
+        [ProducesResponseType(typeof(Dish), StatusCodes.Status200OK)]
         public IActionResult Create([FromBody]Dish dish)
         {
             if (!ModelState.IsValid)
@@ -59,6 +62,7 @@ namespace EasyEat.Controllers
         // PUT api/<controller>
         [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpPut]
+        [ProducesResponseType(typeof(Dish), StatusCodes.Status200OK)]
         public IActionResult Update([FromBody]Dish dish)
         {
             if (dish == null)
@@ -73,6 +77,7 @@ namespace EasyEat.Controllers
         // DELETE api/<controller>/5
         [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(Dish), StatusCodes.Status200OK)]
         public IActionResult Delete(int id)
         {
             Dish dish = db.GetEntity(id);
@@ -83,6 +88,15 @@ namespace EasyEat.Controllers
             db.Delete(id);
             db.Save();
             return Ok(dish);
+        }
+
+        // DELETE api/<controller>/5
+        [Authorize]
+        [HttpGet("CaloricValue/{dishid}")]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        public int CaloricValue(int dishid)
+        {
+            return ml.GetDishCaloricValue(dishid);
         }
     }
 }

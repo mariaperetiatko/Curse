@@ -40,9 +40,9 @@ namespace EasyEat.Controllers
             List<Restaurant> restaurants = db.GetEntityList().ToList();
             foreach(Restaurant restaurant in restaurants)
             {
-                restaurant.City = _localizer[restaurant.City];
-                restaurant.Country = _localizer[restaurant.Country];
-                restaurant.Streete = _localizer[restaurant.Streete];
+                restaurant.City = restaurant.City;
+                restaurant.Country = restaurant.Country;
+                restaurant.Streete = restaurant.Streete;
             }
             return restaurants.AsEnumerable();
         }
@@ -55,9 +55,9 @@ namespace EasyEat.Controllers
             Restaurant restaurant = db.GetEntity(id);
             if (restaurant == null)
                 return NotFound();
-            restaurant.City = _localizer[restaurant.City];
-            restaurant.Country = _localizer[restaurant.Country];
-            restaurant.Streete = _localizer[restaurant.Streete];
+            restaurant.City = restaurant.City;
+            restaurant.Country = restaurant.Country;
+            restaurant.Streete = restaurant.Streete;
             return new ObjectResult(restaurant);
         }
 
@@ -75,7 +75,7 @@ namespace EasyEat.Controllers
             restaurant.Streete = _localizer[restaurant.Streete];
             restaurant.City = _localizer[restaurant.City];
             restaurant.Country = _localizer[restaurant.Country];
-
+            
             db.Create(restaurant);
             db.Save();
             return Ok(restaurant);
