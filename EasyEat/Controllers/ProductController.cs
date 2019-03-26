@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EasyEat.Controllers
 {
-    [Authorize]
+    /*[Authorize]*/
     [Produces("application/json")]
     [Route("api/Product")]
     public class ProductController : Controller
@@ -46,7 +46,9 @@ namespace EasyEat.Controllers
         }
 
         // POST api/<controller>
-        [Authorize(Roles = "Admin, RestaurantOwner")]
+        /*
+         * [Authorize(Roles = "Admin, RestaurantOwner")]
+         * */
         [HttpPost]
         [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
         public IActionResult Create([FromBody]Product product)
@@ -61,7 +63,9 @@ namespace EasyEat.Controllers
         }
 
         // PUT api/<controller>
+        /*
         [Authorize(Roles = "Admin, RestaurantOwner")]
+        */
         [HttpPut]
         [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
         public IActionResult Update([FromBody]Product product)
@@ -77,7 +81,9 @@ namespace EasyEat.Controllers
         }
 
         // DELETE api/<controller>/5
+        /*
         [Authorize(Roles = "Admin, RestaurantOwner")]
+        */
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
         public IActionResult Delete(int id)

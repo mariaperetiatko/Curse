@@ -61,6 +61,11 @@ namespace EasyEat.Repositories
             return cartPart;
         }
 
+        public int GetTemperature()
+        {
+            CartPart cp = db.CartPart.Last();
+            return cp.DishTemperature;
+        }
 
         public void Create(CartPart cartPart)
         {

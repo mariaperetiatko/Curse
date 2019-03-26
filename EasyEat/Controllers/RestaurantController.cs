@@ -16,7 +16,7 @@ using System.Globalization;
 
 namespace EasyEat.Controllers
 {
-    [Authorize]
+    /*[Authorize]*/
     [Produces("application/json")]
     [Route("api/Restaurant")]
     public class RestaurantController : Controller
@@ -32,7 +32,7 @@ namespace EasyEat.Controllers
         }
 
         // GET: api/<controller>
-        [Authorize]
+        /*[Authorize]*/
         [ProducesResponseType(typeof(IEnumerable<Restaurant>), StatusCodes.Status200OK)]
         [HttpGet]
         public IEnumerable<Restaurant> Get()
@@ -63,7 +63,9 @@ namespace EasyEat.Controllers
 
         // POST api/<controller>
         [ProducesResponseType(typeof(Restaurant), StatusCodes.Status200OK)]
+        /*
         [Authorize(Roles = "Admin, RestaurantOwner")]
+        */
         [HttpPost]
         public IActionResult Create([FromBody]Restaurant restaurant)
         {
@@ -83,7 +85,9 @@ namespace EasyEat.Controllers
 
         // PUT api/<controller>
         [ProducesResponseType(typeof(Restaurant), StatusCodes.Status200OK)]
+        /*
         [Authorize(Roles = "Admin, RestaurantOwner")]
+        */
         [HttpPut]
         public IActionResult Update([FromBody]Restaurant restaurant)
         {
@@ -99,7 +103,9 @@ namespace EasyEat.Controllers
 
         // DELETE api/<controller>/5
         [ProducesResponseType(typeof(Restaurant), StatusCodes.Status200OK)]
+        /*
         [Authorize(Roles = "Admin, RestaurantOwner")]
+        */
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {

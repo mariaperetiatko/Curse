@@ -55,7 +55,9 @@ namespace EasyEat.Controllers
         }
 
         // POST api/<controller>
+        /*
         [Authorize(Roles = "Admin, RestaurantOwner")]
+        */
         [HttpPost]
         [ProducesResponseType(typeof(Ingredient), StatusCodes.Status200OK)]
         public IActionResult Create([FromBody]Ingredient ingredient)
@@ -70,7 +72,9 @@ namespace EasyEat.Controllers
         }
 
         // PUT api/<controller>
+        /*
         [Authorize(Roles = "Admin, RestaurantOwner")]
+        */
         [HttpPut]
         [ProducesResponseType(typeof(Ingredient), StatusCodes.Status200OK)]
         public IActionResult Update([FromBody]Ingredient ingredient)
@@ -88,7 +92,9 @@ namespace EasyEat.Controllers
        
 
         // DELETE api/<controller>/5
+        /*
         [Authorize(Roles = "Admin, RestaurantOwner")]
+        */
         [HttpDelete("{id}")]
         [ActionName("Delete")]
         [ProducesResponseType(typeof(Ingredient), StatusCodes.Status200OK)]

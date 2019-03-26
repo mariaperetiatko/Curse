@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace EasyEat.Controllers
 {
-    [Authorize]
+   /* [Authorize]*/
     [Produces("application/json")]
     [Route("api/DeliveryAddress")]
     public class DeliveryAddressController : Controller
@@ -22,8 +22,9 @@ namespace EasyEat.Controllers
         {
             db = new DeliveryAddressRepository();
         }       
-
+        /*
         [Authorize(Roles = "Member, Admin")]
+        */
         [ProducesResponseType(typeof(IEnumerable<DeliveryAddress>), StatusCodes.Status200OK)]
         [HttpGet]
         public IEnumerable<DeliveryAddress> Get()
@@ -42,7 +43,9 @@ namespace EasyEat.Controllers
 
         // GET api/<controller>/5
         [ProducesResponseType(typeof(DeliveryAddress), StatusCodes.Status200OK)]
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
@@ -55,7 +58,9 @@ namespace EasyEat.Controllers
         // POST api/<controller>
         [ProducesResponseType(typeof(DeliveryAddress), StatusCodes.Status200OK)]
         [HttpPost]
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         public IActionResult Create([FromBody]DeliveryAddress deliveryAddress)
         {
             if (!ModelState.IsValid)

@@ -11,7 +11,7 @@ using EasyEat.BusinessLogic;
 
 namespace EasyEat.Controllers
 {
-    [Authorize]
+    /*[Authorize]*/
     [Produces("application/json")]
     [Route("api/MealTime")]
     public class MealTimeController : Controller

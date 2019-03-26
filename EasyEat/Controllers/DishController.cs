@@ -11,7 +11,7 @@ using EasyEat.BusinessLogic;
 
 namespace EasyEat.Controllers
 {
-    [Authorize]
+    /*[Authorize]*/
     [Produces("application/json")]
     [Route("api/Dish")]
     public class DishController : Controller
@@ -45,7 +45,9 @@ namespace EasyEat.Controllers
         }
 
         // POST api/<controller>
+        /*
         [Authorize(Roles = "Admin, RestaurantOwner")]
+        */
         [HttpPost]
         [ProducesResponseType(typeof(Dish), StatusCodes.Status200OK)]
         public IActionResult Create([FromBody]Dish dish)
@@ -60,7 +62,9 @@ namespace EasyEat.Controllers
         }
 
         // PUT api/<controller>
+        /*
         [Authorize(Roles = "Admin, RestaurantOwner")]
+        */
         [HttpPut]
         [ProducesResponseType(typeof(Dish), StatusCodes.Status200OK)]
         public IActionResult Update([FromBody]Dish dish)
@@ -75,7 +79,9 @@ namespace EasyEat.Controllers
         }
 
         // DELETE api/<controller>/5
+        /*
         [Authorize(Roles = "Admin, RestaurantOwner")]
+        */
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Dish), StatusCodes.Status200OK)]
         public IActionResult Delete(int id)
@@ -91,7 +97,9 @@ namespace EasyEat.Controllers
         }
 
         // DELETE api/<controller>/5
+        /*
         [Authorize]
+        */
         [HttpGet("CaloricValue/{dishid}")]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         public int CaloricValue(int dishid)

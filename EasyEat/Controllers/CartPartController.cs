@@ -28,7 +28,9 @@ namespace EasyEat.Controllers
 
         // GET: api/<controller>
         [ProducesResponseType(typeof(IEnumerable<CartPart>), StatusCodes.Status200OK)]
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [HttpGet]
         public IEnumerable<CartPart> Get()
         {
@@ -46,7 +48,9 @@ namespace EasyEat.Controllers
 
         // GET api/<controller>/5
         [ProducesResponseType(typeof(CartPart), StatusCodes.Status200OK)]
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [HttpGet("Get/{id}")]
         public IActionResult Get([FromQuery]CartPartKey id)
         {
@@ -58,7 +62,9 @@ namespace EasyEat.Controllers
 
         // POST api/<controller>
         [ProducesResponseType(typeof(CartPart), StatusCodes.Status200OK)]
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [HttpPost]
         public IActionResult Create([FromBody]CartPart cartPart)
         {
@@ -84,7 +90,9 @@ namespace EasyEat.Controllers
 
         // PUT api/<controller>
         [ProducesResponseType(typeof(CartPart), StatusCodes.Status200OK)]
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [HttpPut]
         public IActionResult Undate([FromBody]CartPart cartPart)
         {
@@ -109,7 +117,9 @@ namespace EasyEat.Controllers
 
         // DELETE api/<controller>/5
         [ProducesResponseType(typeof(CartPart), StatusCodes.Status200OK)]
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [HttpDelete("{id}")]
         [ActionName("Delete")]
         public IActionResult Delete([FromQuery]CartPartKey id)
@@ -131,11 +141,20 @@ namespace EasyEat.Controllers
         }
 
         [ProducesResponseType(typeof(IEnumerable<CartPart>), StatusCodes.Status200OK)]
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [HttpGet("GetCartPartByCustomer/{id}")]
         public IEnumerable<CartPart> GetCartPartByCustomer(int id)
         {
             return db.GetCartPartByCustomer(id);
+        }
+
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [HttpGet("GetTemperature")]
+        public int GetTemperature()
+        {
+            return db.GetTemperature();
         }
     }
 }

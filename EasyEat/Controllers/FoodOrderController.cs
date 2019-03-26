@@ -13,7 +13,7 @@ using EasyEat.BusinessLogic;
 
 namespace EasyEat.Controllers
 {
-    [Authorize]
+    /*[Authorize]*/
     [Produces("application/json")]
     [Route("api/FoodOrder")]
     public class FoodOrderController : Controller
@@ -62,7 +62,9 @@ namespace EasyEat.Controllers
 
         // POST api/<controller>
         [ProducesResponseType(typeof(FoodOrder), StatusCodes.Status200OK)]
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [HttpPost]
         public IActionResult Create([FromBody]FoodOrder foodOrder)
         {
@@ -89,7 +91,9 @@ namespace EasyEat.Controllers
 
         // PUT api/<controller>
         [ProducesResponseType(typeof(FoodOrder), StatusCodes.Status200OK)]
-        [Authorize(Roles = "Admin, Member")]
+        /*
+         * [Authorize(Roles = "Admin, Member")]
+         * */
         [HttpPut]
         public IActionResult Update([FromBody]FoodOrder foodOrder)
         {
@@ -111,7 +115,9 @@ namespace EasyEat.Controllers
 
         // DELETE api/<controller>/5
         [ProducesResponseType(typeof(FoodOrder), StatusCodes.Status200OK)]
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
@@ -125,6 +131,5 @@ namespace EasyEat.Controllers
             return Ok(foodOrder);
         }
 
-    
     }
 }

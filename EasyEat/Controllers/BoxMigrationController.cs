@@ -16,13 +16,17 @@ namespace EasyEat.Controllers
     public class BoxMigrationController : Controller
     {
         BoxMigrationRepository db;
+        FoodOrderRepository foodOrderRepository;
 
         public BoxMigrationController()
         {
             db = new BoxMigrationRepository();
+            foodOrderRepository = new FoodOrderRepository();
         }
 
+        /*
         [Authorize(Roles = "Member, Admin")]
+        */
         [HttpGet]
         public IEnumerable<BoxMigration> Get()
         {
@@ -39,7 +43,9 @@ namespace EasyEat.Controllers
         }
 
         // GET api/<controller>/5
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
@@ -49,20 +55,58 @@ namespace EasyEat.Controllers
             return new ObjectResult(boxMigration);
         }
 
+        [HttpGet("GetMapMarker")]
+        [ProducesResponseType(typeof(BoxMigration), StatusCodes.Status200OK)]
+        public IActionResult GetMapMarker()
+        {
+            BoxMigration boxMigration = db.GetEntityList().Last();
+            if (boxMigration == null)
+                return NotFound();
+            return new ObjectResult(boxMigration);
+        }
+
         // POST api/<controller>
         [HttpPost]
+        [ProducesResponseType(typeof(BoxMigration), StatusCodes.Status200OK)]
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         public IActionResult Create([FromBody]BoxMigration boxMigration)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            
+            IEnumerable<FoodOrder> fo = foodOrderRepository.GetEntityList();
+            boxMigration.FoodOrderId = fo.Last().Id;
             db.Create(boxMigration);
             db.Save();
             boxMigration.FoodOrder = null;
             return Ok(boxMigration);
+        }
+
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [HttpGet("CreateByCoordinates/{coordinates}")]
+        public IActionResult CreateByCoordinates(string coordinates)
+        {
+            if (coordinates != null)
+            {
+                string[] coords = coordinates.Split(new char[] { ':' });
+                if (coords.Length == 7)
+                {
+                    BoxMigration boxMigration = new BoxMigration();
+                    boxMigration.Temperature = coords[2];
+                    boxMigration.Latitude = double.Parse(coords[4]);
+                    boxMigration.Longtitude = double.Parse(coords[6]);
+                    boxMigration.Moment = DateTime.Now;
+                    IEnumerable<FoodOrder> fo = foodOrderRepository.GetEntityList();
+                    boxMigration.FoodOrderId = fo.Last().Id;
+                    db.Create(boxMigration);
+                    db.Save();
+                    boxMigration.FoodOrder = null;
+                }
+            }
+            return Ok("Created");
         }
 
         // PUT api/<controller>

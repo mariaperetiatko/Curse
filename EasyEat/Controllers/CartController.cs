@@ -30,7 +30,9 @@ namespace EasyEat.Controllers
 
         // GET: api/<controller>
         [ProducesResponseType(typeof(IEnumerable<Cart>), StatusCodes.Status200OK)]
+        /*         
         [Authorize(Roles = "Admin, Member")]
+        */
         [HttpGet("Get")]
         public IEnumerable<Cart> Get()
         {
@@ -38,8 +40,11 @@ namespace EasyEat.Controllers
         }
 
         [ProducesResponseType(typeof(Cart), StatusCodes.Status200OK)]
+        /*
         [Authorize(Roles = "Member")]
+        */
         [HttpGet("GetCart")]        
+        
         public IActionResult GetCart()
         {
             string userJWTId = User.FindFirst("id")?.Value;
@@ -55,7 +60,9 @@ namespace EasyEat.Controllers
 
         // GET api/<controller>/5
         [ProducesResponseType(typeof(Cart), StatusCodes.Status200OK)]
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
@@ -83,7 +90,9 @@ namespace EasyEat.Controllers
 
         // PUT api/<controller>
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [HttpPut]
         public IActionResult Update([FromBody]Cart cart)
         {
@@ -121,7 +130,9 @@ namespace EasyEat.Controllers
 
         // DELETE api/<controller>/5
         [ProducesResponseType(typeof(Cart), StatusCodes.Status200OK)]
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {

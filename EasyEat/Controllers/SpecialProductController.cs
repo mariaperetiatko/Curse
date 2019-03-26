@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace EasyEat.Controllers
 {
-    [Authorize(Roles = "Admin, Member")]
+    /*[Authorize(Roles = "Admin, Member")]*/
     [Produces("application/json")]
     [Route("api/SpecialProduct")]
     public class SpecialProductController : Controller
@@ -25,7 +25,9 @@ namespace EasyEat.Controllers
         }
 
         // GET: api/<controller>
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [ProducesResponseType(typeof(IEnumerable<SpecialProduct>), StatusCodes.Status200OK)]
         [HttpGet]
         public IEnumerable<SpecialProduct> Get()
@@ -44,7 +46,9 @@ namespace EasyEat.Controllers
 
 
         // GET: api/<controller>
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
         [HttpGet("NotSpecialProducts")]
         public IEnumerable<Product> NotSpecialProducts()
@@ -75,7 +79,10 @@ namespace EasyEat.Controllers
         }
 
         // GET: api/<controller>
+        /*
+         
         [Authorize(Roles = "Member")]
+        */
         [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
         [HttpGet("AllowedProductBySpecial")]
         public IEnumerable<Product> AllowedProductBySpecial()
@@ -96,7 +103,9 @@ namespace EasyEat.Controllers
         }
 
         // GET: api/<controller>
+        /*
         [Authorize(Roles = "Member")]
+        */
         [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
         [HttpGet("NotAllowedProductBySpecial")]
         public IEnumerable<Product> NotAllowedProductBySpecial()

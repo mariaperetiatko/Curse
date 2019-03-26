@@ -23,5 +23,10 @@ namespace EasyEat.Controllers
         //{
         //    return Ok("Ваша роль: администратор");
         //}
+        [HttpGet]
+        public IActionResult Get()
+        {
+            return Ok("Server works");
+        }
     }
 }

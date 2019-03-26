@@ -29,7 +29,9 @@ namespace EasyEat
 
 
         // GET: api/<controller>
+        /*
         [Authorize(Roles = "Admin")]
+        */
         [ProducesResponseType(typeof(IEnumerable<Customer>), StatusCodes.Status200OK)]
         [HttpGet]
         public IEnumerable<Customer> Get()
@@ -37,7 +39,9 @@ namespace EasyEat
             return db.GetEntityList();
         }
 
+        /*
         [Authorize(Roles = "Member")]
+        */
         [HttpGet("GetCustomer")]
         [ProducesResponseType(typeof(Customer), StatusCodes.Status200OK)]
         public IActionResult GetCustomer()
@@ -59,8 +63,20 @@ namespace EasyEat
             return db.GetCustomer(userJWTId).Id;
         }
 
+
+        [HttpGet("GetRoleByToken")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        public string GetRoleByToken()
+        {
+            string userJWTId = User.FindFirst("roles")?.Value;
+            return userJWTId;
+        }
+
+
         // GET api/<controller>/5
+        /*
         [Authorize(Roles = "Admin")]
+        */
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Customer), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
@@ -86,7 +102,9 @@ namespace EasyEat
         }
 
         // PUT api/<controller>
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [HttpPut]
         [ProducesResponseType(typeof(Customer), StatusCodes.Status200OK)]
         public IActionResult Update([FromBody]Customer customer)
@@ -243,7 +261,9 @@ namespace EasyEat
         }
 
         // DELETE api/<controller>/5
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {

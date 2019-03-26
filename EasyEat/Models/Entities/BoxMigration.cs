@@ -12,6 +12,7 @@ namespace EasyEat.Models
         public double Longtitude { get; set; }
         public DateTime Moment { get; set; }
         public int FoodOrderId { get; set; }
+        public string Temperature { get; set; }
 
         public virtual FoodOrder FoodOrder { get; set; }
     }

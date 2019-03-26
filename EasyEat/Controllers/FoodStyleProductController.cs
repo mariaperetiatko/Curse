@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EasyEat.Controllers
 {
-    [Authorize]
+    /*[Authorize]*/
     [Produces("application/json")]
     [Route("api/FoodStyleProduct")]
     public class FoodStyleProductController : Controller
@@ -49,7 +49,9 @@ namespace EasyEat.Controllers
         }
 
         // POST api/<controller>
+        /*
         [Authorize(Roles = "Admin, RestaurantOwner")]
+        */
         [HttpPost]
         [ProducesResponseType(typeof(FoodStyleProduct), StatusCodes.Status200OK)]
         public IActionResult Create([FromBody]FoodStyleProduct foodStyleProduct)
@@ -64,7 +66,9 @@ namespace EasyEat.Controllers
         }
 
         // PUT api/<controller>
+        /*
         [Authorize(Roles = "Admin, RestaurantOwner")]
+        */
         [HttpPut]
         [ProducesResponseType(typeof(FoodStyleProduct), StatusCodes.Status200OK)]
         public IActionResult Update([FromBody]FoodStyleProduct foodStyleProduct)
@@ -80,7 +84,9 @@ namespace EasyEat.Controllers
         }
 
         // GET: api/<controller>
+        /*
         [Authorize]
+        */
         [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
         [HttpGet("ProductByFoodStyle/{foodStyleId}")]
         public IEnumerable<Product> ProductByFoodStyle(int foodStyleId)
@@ -96,7 +102,9 @@ namespace EasyEat.Controllers
         }
 
         // GET: api/<controller>
+        /*
         [Authorize]
+        */
         [ProducesResponseType(typeof(IEnumerable<FoodStyleProduct>), StatusCodes.Status200OK)]
         [HttpGet("FoodStyleProductsByFoodStyle/{foodStyleId}")]
         public IEnumerable<FoodStyleProduct> FoodStyleProductsByFoodStyle(int foodStyleId)
@@ -111,7 +119,9 @@ namespace EasyEat.Controllers
         }
 
         // DELETE api/<controller>/5
+        /*
         [Authorize(Roles = "Admin, RestaurantOwner")]
+        */
         [HttpDelete("{id}")]
         [ActionName("Delete")]
         [ProducesResponseType(typeof(FoodStyleProduct), StatusCodes.Status200OK)]

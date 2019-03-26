@@ -25,7 +25,9 @@ namespace EasyEat.Controllers
         }
 
         // GET: api/<controller>
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [HttpGet]
         public IEnumerable<FavouriteDish> Get()
         {
@@ -42,7 +44,9 @@ namespace EasyEat.Controllers
         }
 
         // GET api/<controller>/5
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [HttpGet("{id}")]
         [ActionName("Get")]
         public IActionResult Get([FromQuery]FavouriteDishKey id)
@@ -54,7 +58,9 @@ namespace EasyEat.Controllers
         }
 
         // POST api/<controller>
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [HttpPost]
         [ProducesResponseType(typeof(FavouriteDish), StatusCodes.Status200OK)]
         public IActionResult Create([FromBody]FavouriteDish dish)
@@ -77,7 +83,9 @@ namespace EasyEat.Controllers
         }
 
         // PUT api/<controller>
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [HttpPut]
         public IActionResult Update([FromBody]FavouriteDish dish)
         {
@@ -97,7 +105,9 @@ namespace EasyEat.Controllers
         }
 
         // DELETE api/<controller>/5
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [HttpDelete("{id}")]
         [ActionName("Delete")]
         [ProducesResponseType(typeof(FavouriteDish), StatusCodes.Status200OK)]
@@ -122,7 +132,9 @@ namespace EasyEat.Controllers
         }
 
         // GET: api/<controller>
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [ProducesResponseType(typeof(IEnumerable<Dish>), StatusCodes.Status200OK)]
         [HttpGet("GetFavouriteDishesByCustomer")]
         public IEnumerable<Dish> GetFavouriteDishesByCustomer()
@@ -148,7 +160,9 @@ namespace EasyEat.Controllers
         }
 
         // GET: api/<controller>
+        /*
         [Authorize(Roles = "Admin, Member")]
+        */
         [ProducesResponseType(typeof(IEnumerable<Dish>), StatusCodes.Status200OK)]
         [HttpGet("GetNotFavouriteDishesByCustomer")]
         public IEnumerable<Dish> GetNotFavouriteDishesByCustomer()
